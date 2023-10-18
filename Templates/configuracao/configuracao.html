@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <title>Login</title>
+</head>
+<body class="container bg-dark-subtle text-white" style="width:40%; ">
+    <div class=" bg-secondary fs-2" style="text-align: center;border-radius: 10px;">
+        {% if user.is_authenticated %}
+            <p>Olá {{ user.username }}. Fique à vontade!</p>
+        {% else %}
+            <p>Welcome, new user. Please log in.</p>
+        {% endif %}
+    </div>
+    <div style="text-align: center; margin-top: 250px">
+        <div class="bg-body-tertiary  form-control" style="width:100%";>
+
+            <div style="margin-bottom: 25px">
+                <label for=""class = "fw-bold fs-2 "  >Configurações</label>
+            </div>
+            
+            <div style="margin-bottom: 25px">
+                <a href="{% url 'cadastrar_paciente' %}" class=" form-control  btn btn-lg btn-success" for="">Cadastrar Novo Paciente</a>
+            </div> 
+            
+            <div style="margin-bottom: 25px">
+                <a href="{% url 'listar_dados' %}" class=" form-control  btn btn-lg btn-success" for="">Pacientes Cadastrados</a>
+            </div> 
+            
+            <div style="margin-bottom:25px">
+                <label class=" form-control  btn btn-lg btn-success" for="">Agendamento</label>
+            </div>
+            
+            <div style="margin-bottom: 25px">
+                <label class="form-control btn btn-lg btn-success" for="">Orçamento</label>
+            </div>
+            
+            <div style="margin-bottom: 25px">
+                <label class=" form-control btn btn-lg btn-success" for="">Complementar Atendimento</label>
+            </div>
+            
+            <div style="margin-bottom: 25px">
+                <label class=" form-control btn btn-lg btn-success" for="">Editar Paciente</label>
+            </div> 
+            
+            <div style="margin-bottom: 25px">
+                <label class="form-control btn btn-lg btn-success" for="">Novo Profissional</label>
+            </div>    
+            
+            <div style="margin-bottom: 25px">
+                <label class="form-control btn btn-lg btn-success" for="">Relatórios</label>
+            </div> 
+        </div>
+    </div>
+    <div style="margin-top: 50px">
+        <a href="{% url 'Clinica' %}" class="form-control btn btn-lg btn-secondary">Sair</a>
+    </div>
+        
+        
+    
+
+
+<script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
+</body>
+</html>

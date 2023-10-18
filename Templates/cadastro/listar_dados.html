@@ -10,7 +10,7 @@
     <title>Dados</title>
 </head>
 <body class="container">
-    <h1 style = "text-align: center;margin-top: 5%;"	>Cadastro de Dados</h1>
+    <h1 style = "text-align: center;margin-top: 5%;"	>Pacientes Cadastrados</h1>
     <table border = 1 class="table table-striped table-hover ">
         
         <thead>
@@ -18,31 +18,44 @@
               <tr>
                  
                   <th>#</th>
-
+                   
                   <th>Nome</th>
                   <th>Telefone</th>
                   <th>E-mail</th>
+                  <th>Profissão</th>
+                  <th>CEP</th>
+                  <th>Estado</th>
                   <th>Cidade</th>
-                  <th>Subestação</th>
-                  <th>Tensão AT</th>
-                  <th>Tensão BT</th>
+                  <th>Bairro</th>
+                  <th>Número</th>
+                  <th>Complemento</th>
+                  <th>Alergia</th>
+                  <th>Doenças Conhecidas</th>
                   <th>Ações</th>
-                  {% for dado in Dados  %}
+                  {% for paciente in Pacientes %}
                     <tr>
-                        <td>{{ dado.id }}</td>
-                        <td>{{ dado.nome }}</td>
-                        <td>{{ dado.telefone }}</td>
-                        <td>{{ dado.email }}</td>
-                        <td>{{ dado.cidade }}</td>
-                        <td>{{ dado.subestacao }}</td>
-                        <td>{{ dado.nivel_tensao_AT }}</td>
-                        <td>{{ dado.nivel_tensao_BT }}</td>
+                        <td>{{ paciente.id }}</td>
+                        <td>{{ paciente.nome }}</td>
+                        <td>{{ paciente.telefone }}</td>
+                        <td>{{ paciente.email }}</td>
+                        <td>{{ paciente.data_nascimento }}</td>
+                        <td>{{ paciente.profissao }}</td>
+                        <td>{{ paciente.cep }}</td>
+                        <td>{{ paciente.estado }}</td>
+                        <td>{{ paciente.cidade }}</td>
+                        <td>{{ paciente.bairro }}</td>
+                        <td>{{ paciente.numero }}</td>
+                        <td>{{ paciente.complemento }}</td>
+                        <td>{{ paciente.alergia }}</td>
+                        <td>{{ paciente.doencas_conhecidas }}</td>
 
                         <td>
-                            <a href="{% url 'editar' dado.id %}" class="btn btn-success btn-sm">
+                            {% comment  %}
+                            <a href="{% url 'editar' paciente.id %}" class="btn btn-success btn-sm">
                             <i class="bi bi-pencil-square"></i>
                             </a>
-                            <a href="{% url 'remover' dado.id %}" class="btn btn-danger btn-sm">
+                            {% endcomment  %}
+                            <a href="{% url 'remover' paciente.id %}" class="btn btn-danger btn-sm">
                             <i class="bi bi-trash"></i>
                             </a>
                         </td>
@@ -57,7 +70,7 @@
     <div class = "mb-3 text-center">
          
         <a href= "{% url 'index' %}" class="form-label btn btn-lg btn-secondary " style="margin-top: 55px;">Início</a>
-        <a href="{% url 'cadastrar_dados' %}" class=" form-label btn btn-lg btn-secondary " style="margin-top: 55px;">Cadastrar Dados</a>
+        <a href="{% url 'cadastrar_paciente' %}" class=" form-label btn btn-lg btn-secondary " style="margin-top: 55px;">Cadastrar Dados</a>
     </div>
 
     

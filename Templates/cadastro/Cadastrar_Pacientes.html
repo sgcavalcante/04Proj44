@@ -9,63 +9,105 @@
     <title>Seção de Cadastro</title>
 </head>
 <body class="container bg-dark  text-white" style="width:30%;margin-top: 10%; ">
+    <div class=" bg-secondary fs-2" style="text-align: center;">
+        {% if user.is_authenticated %}
+            <p>Olá {{ user.username }}. Fique à vontade!</p>
+        {% else %}
+            <p>Welcome, new user. Please log in.</p>
+        {% endif %}
+    </div>
 <div >
-    <h1 class="m-4" style="text-align: center;">Cadastro de Dados</h1>
-    <form method="POST"   action="{% url 'cadastrar_dados' %}">
+    <h1 class="m-4" style="text-align: center;">Cadastro de Paciente</h1>
+    <form method="POST"   action="{% url 'cadastrar_paciente' %}">
         {% csrf_token %}
-        <div style="margin-bottom: 15px ; ">
-            <label for="">Nome</label>
-            <input type="text" name="nome" class="form-control">
+        <div class="bg-secondary" style="border-radius: 10px; padding:30px">
+            <p class="fs-3" style="text-align: center;">DADOS PESSOAIS</p> 
+                <div style="margin-bottom: 15px ; ">
+                    <label for="">Nome Completo</label>
+                    <input type="text" name="nome" class="form-control">
+                </div>
+                <div style="margin-bottom: 15px " >
+                    <label for="">Telefone</label>
+                    <input type="text" name="telefone" class="form-control">
+                </div>
+                <div style="margin-bottom: 15px">
+                    <label for="">E-mail</label>
+                    <input type="email" name="email" class="form-control" id="floatingInput">
+                </div>
+                <div style="margin-bottom: 15px">
+                    <label for="startDate">Data de Nascimento</label>
+                    <input name="data_nascimento" class="form-control"  type="date" />
+                </div>
         </div>
-        <div style="margin-bottom: 15px">
-            <label for="">Telefone</label>
-            <input type="text" name="telefone" class="form-control">
+        <div class="bg-secondary" style="border-radius: 10px; padding:30px; margin-top: 30px;">
+            <p class="fs-3" style="text-align: center;">DADOS PROFISSIONAIS</p>
+            <div style="margin-bottom: 15px">
+                <label for="">Profissão</label>
+                <input type="text" name="profissao" class="form-control" id="floatingInput">
+            </div>
+        </div>    
+        <div class="bg-secondary" style="border-radius: 10px; padding:30px ;margin-top: 30px;">
+            <p class="fs-3" style="text-align: center;">ENDEREÇO</p>
+            <div style="margin-bottom: 15px">
+            <label for="" >CEP</label >
+            <input type="text" name="cep" class="form-control">
+            </div>
+            <div style="margin-bottom: 15px">
+                <label for="" >Estado</label >
+                <input type="text" name="estado" class="form-control">
+            </div>
+            <div style="margin-bottom: 15px">
+                <label for="" >Cidade</label >
+                <input type="text" name="cidade" class="form-control">
+            </div>
+
+            <div style="margin-bottom: 15px">
+                <label for="" >Bairro</label >
+                <input type="text" name="bairro" class="form-control">
+            </div>
+            <div style="margin-bottom: 15px">
+                <label for="" >Rua</label >
+                <input type="text" name="rua" class="form-control">
+            </div>
+            <div style="margin-bottom: 15px">
+                <label for="" >Número</label >
+                <input type="text" name="numero" class="form-control">
+            </div>
+            <div style="margin-bottom: 15px">
+                <label for="" >Complemento</label >
+                <input type="text" name="complemento" class="form-control">
+            </div>
         </div>
 
-        <div style="margin-bottom: 15px">
-            <label for="">E-mail</label>
-            <input type="email" name="email" class="form-control" id="floatingInput">
-        </div>
 
-        <div style="margin-bottom: 15px">
-            <label for="" >Cidade</label >
-            <input type="text" name="cidade" class="form-control">
-        </div>
-
-         <div style="margin-bottom: 15px">
-            <label for="" >Subestação</label >
-            <input type="text" name="subestacao" class="form-control">
-        </div>
-
-         <div style="margin-bottom: 15px; text-align: center;">
-            <label for="" >Nível de Tensão Lado AT</label >
-            <!--<input type="text" name="cidade" class="form-control">-->
-            <select name="nivel_tensao_AT" id="nivel_tensao_AT">
-
-                <option value="13,8">13,8</option>
-                <option value = "69">69</option>
-                <option value = "138">138</option>
-                <option value = "230">230</option>
-            </select>
-        </div>
-
-         <div style="margin-bottom: 15px;text-align: center;">
-            <label for="" >Nível de Tensão Lado BT</label >
-            <!--<input type="text" name="cidade" class="form-control">-->
-            <select name="nivel_tensao_BT" id="nivel_tensao_BT">
-
-                <option value="11,0">11,0</option>
-                <option value = "13,8">13,8</option>
-                <option value = "34,5">34,5</option>
-
-            </select>
-        </div>
+        <div class="bg-secondary" style="border-radius: 10px; padding:30px ;margin-top: 30px;margin-bottom: 15px">
+                <p class="fs-3" style="text-align: center;">DADOS DE SAÚDE</p>
+                <label for="" >Alergia</label >
+                    <!--<input type="text" name="cidade" class="form-control">-->
+                    <select class="form-control" name="alergia" id="nivel_tensao_AT">
+                        <option value = "Outros">Não Informada</option>
+                        <option value="Dipirona">Dipirona</option>
+                        <option value = "AAS">AAS</option>
+                        <option value = "Crustáceos">Crustáceos</option>
+                        <option value = "Outros">Outros</option>
+                    </select>
+                    <div style="margin-bottom: 15px">
+                        <label for="" >Doenças Conhecidas</label >
+                        <input type="text" name="doencas_conhecidas" class="form-control">
+                    </div>
+             
+        </div> 
+                
+                
 
         <div class = "mb-3 " style ="text-align: center;" >
-            <button type="submit" class =" form-label btn btn-primary btn-lg  " style="margin-top: 55px;">Cadastrar</button>
-            <button type="reset" class = " form-label btn btn-danger btn-lg" style="margin-top: 55px;">Limpar Formulario</button>
-            <a href = "{% url 'listar_dados' %}" class=" form-label btn btn-success btn-lg " style="margin-top: 55px;">Listar Dados </a>
-            <a href= "{% url 'index' %}" class="form-label btn btn-lg btn-secondary " style="margin-top: 55px;">Início</a>
+            
+            <div style="margin-bottom: 25px">
+                <button type="submit" class =" form-control btn btn-primary btn-lg  " style="margin-top: 55px;">Cadastrar</button>
+                <button type="reset" class = " form-control btn btn-danger btn-lg" style="margin-top: 7.5px;">Limpar Formulario</button>
+                <a href= "{% url 'configuracao' %}" class="form-control btn btn-lg btn-secondary " style="margin-top: 7.5px;">Configurações</a>
+                <a href="{% url 'Clinica' %}" class="form-control btn btn-lg btn-secondary" style="margin-top: 7.5px;">Sair</a>
+            </div>
         </div>
 
 
