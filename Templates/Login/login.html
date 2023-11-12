@@ -9,13 +9,13 @@
     <title>Login</title>
      
 </head>
-<body class="container bg-dark text-white" style="width:20%; margin-top: 30%">
+<body class="container bg-dark text-white" style="width:250px; margin-top: 500px;  ">
     
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
         {% for campo in form.visible_fields %}
 
-                <div  >
+                <div  style="border: 0cm;">
                     <label   for="{{ campo.id_for_label }}"> {{ campo.label }} </label>
                      
                     <label class="form-control">  {{ campo }}</label>

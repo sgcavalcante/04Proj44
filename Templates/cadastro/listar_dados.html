@@ -18,10 +18,10 @@
               <tr>
                  
                   <th>#</th>
-                   
                   <th>Nome</th>
                   <th>Telefone</th>
                   <th>E-mail</th>
+                  <th>Data Nascimento</th>
                   <th>Profissão</th>
                   <th>CEP</th>
                   <th>Estado</th>
@@ -34,6 +34,7 @@
                   <th>Ações</th>
                   {% for paciente in Pacientes %}
                     <tr>
+                        
                         <td>{{ paciente.id }}</td>
                         <td>{{ paciente.nome }}</td>
                         <td>{{ paciente.telefone }}</td>

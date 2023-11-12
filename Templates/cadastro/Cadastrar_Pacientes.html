@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <title>Seção de Cadastro</title>
 </head>
-<body class="container bg-dark  text-white" style="width:30%;margin-top: 10%; ">
-    <div class=" bg-secondary fs-2" style="text-align: center;">
+ 
+<body class="container bg-dark-subtle text-white" style="width:40%; "> 
+    <div class=" bg-secondary fs-2" style="text-align: center;border-radius: 10px;">
         {% if user.is_authenticated %}
             <p>Olá {{ user.username }}. Fique à vontade!</p>
         {% else %}
@@ -21,7 +22,10 @@
     <form method="POST"   action="{% url 'cadastrar_paciente' %}">
         {% csrf_token %}
         <div class="bg-secondary" style="border-radius: 10px; padding:30px">
+
+           
             <p class="fs-3" style="text-align: center;">DADOS PESSOAIS</p> 
+
                 <div style="margin-bottom: 15px ; ">
                     <label for="">Nome Completo</label>
                     <input type="text" name="nome" class="form-control">

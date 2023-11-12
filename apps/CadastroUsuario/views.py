@@ -42,6 +42,7 @@ def login(request):
             return redirect('erro')
     return render(request,'Login/login.html',{'form':formulario})
 
+'''
 
 def cadastrar_paciente(request):
     if request.method=='POST':
@@ -53,9 +54,39 @@ def cadastrar_paciente(request):
         form = CadastroPacientesForm()
      
     return render(request,'Cadastro/cadastrar_pacientes.html')
+'''
+def cadastrar_paciente(request):
+    if request.method=='POST':
+        #form = CadastroPacientesForm(request.POST)
+        novo_registro = CadastroPacientes(
+            #['nome','telefone','email','data_nascimento','profissao','cep','estado','cidade','bairro','numero','complemento','alergia','doencas_conhecidas']  
+            nome = request.POST['nome'],
+            telefone = request.POST['telefone'],
+            email = request.POST['email'],
+            data_nascimento = request.POST['data_nascimento'],
+            profissao = request.POST['profissao'],
+            cep = request.POST['cep'],
+            estado = request.POST['estado'],
+            cidade = request.POST['cidade'],
+            bairro = request.POST['bairro'],
+            numero = request.POST['numero'],
+            complemento = request.POST['complemento'],
+            alergia = request.POST['alergia'],
+            doencas_conhecidas = request.POST['doencas_conhecidas'],
+            usuario = request.user
+        )    
+        usuario = request.user
+        print(usuario)
+        novo_registro.save()
+        return redirect('listar_dados')
+    else:
+        form = CadastroPacientesForm()
+     
+    return render(request,'Cadastro/cadastrar_pacientes.html')
 
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
+    
     return render(request,'Cadastro/listar_dados.html',{'Pacientes':pacientes})
 
 def remover(request,id):
