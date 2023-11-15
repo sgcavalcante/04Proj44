@@ -1,0 +1,6 @@
+        {% for campo in form.visible_fields %}
+
+                <label class=" form-label" for="{{campo.id_for_label}}" > {{campo.label}} </label> 
+                <label class="  "> {{ campo }} </label>
+                 
+         {% endfor %}    

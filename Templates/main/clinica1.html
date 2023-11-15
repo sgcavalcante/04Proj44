@@ -22,9 +22,10 @@
 
         <div class="bg-dark" style="text-align: right;">
             <label for="">Área do Paciente:</label>
-            <button class="btn btn-outline-success btn-sm">Login</button>
-            <a href="{% url 'login' %}">Login</a>
-            <button class="btn btn-outline-primary btn-sm">Cadastro para Acesso </button>
+             
+            <a href="{% url 'loginProprietario' %}" class="btn btn-outline-success btn-sm">Login</a>
+             
+            <a href="{% url 'registroProprietario' %}" class="btn btn-outline-primary btn-sm">Cadastro para Acesso</a>
             <button class="btn btn-outline-danger btn-sm">Esqueci a Senha</button>
 
         </div>

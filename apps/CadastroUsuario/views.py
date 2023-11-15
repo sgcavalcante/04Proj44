@@ -40,7 +40,7 @@ def login(request):
         
         else:
             return redirect('erro')
-    return render(request,'Login/login.html',{'form':formulario})
+    return render(request,'CadastroProprietario/cadastroProprietario.html',{'form':formulario})
 
 '''
 
