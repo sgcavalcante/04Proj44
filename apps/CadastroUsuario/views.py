@@ -82,7 +82,7 @@ def cadastrar_paciente(request):
     else:
         form = CadastroPacientesForm()
      
-    return render(request,'Cadastro/Cadastrar_Cacientes.html')
+    return render(request,'Cadastro/Cadastrar_Pacientes.html')
 
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
