@@ -86,7 +86,7 @@ def cadastrar_paciente(request):
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
     
-    return render(request,'Cadastro/listar_dados.html',{'Pacientes':pacientes})
+    return render(request,'configuracao/listar_dados.html',{'Pacientes':pacientes})
 
 def remover(request,id):
     paciente = get_object_or_404(CadastroPacientes,pk=id)
