@@ -73,16 +73,15 @@ def cadastrar_paciente(request):
             complemento = request.POST['complemento'],
             alergia = request.POST['alergia'],
             doencas_conhecidas = request.POST['doencas_conhecidas'],
-            #usuario = request.user
+            
         )    
-        #usuario = request.user
-        print(usuario)
+        
         novo_registro.save()
         return redirect('listar_dados')
     else:
         form = CadastroPacientesForm()
      
-    return render(request,'Cadastro/Cadastrar_Pacientes.html')
+    return render(request,'Cadastro/Cadastrar_Pacientes.html',{'form':form})
 
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
