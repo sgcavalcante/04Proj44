@@ -10,5 +10,5 @@ urlpatterns = [
             path('erro',erro,name='erro'),
             path('cadastrar_paciente',cadastrar_paciente,name='cadastrar_paciente'),
             path('listar_dados',listar_dados,name='listar_dados'),
-            path('remover<int:id>',remover,name='remover')
+            path('remover<int:id>',remover,name='remover'),
 ]
