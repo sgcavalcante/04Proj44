@@ -25,7 +25,7 @@ def loginProprietario(request):
 
         if usuario is not None:
             auth.login(request,usuario)
-            return redirect('index')
+            return redirect('configuracao')
         else:
             return redirect('loginProprietario')
     
