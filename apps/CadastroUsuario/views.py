@@ -4,6 +4,7 @@ from apps.CadastroUsuario.forms import LoginForm,CadastroPacientesForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate
 from apps.CadastroUsuario.models import CadastroPacientes 
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def index(request):
@@ -15,10 +16,11 @@ def Clinica(request):
 def erro(request):
     return render(request,'erro.html') 
 
-
+@login_required
 def configuracao(request):
     return render(request,'configuracao/configuracao.html')
 
+@login_required
 def login(request):
 
     formulario = LoginForm()
@@ -55,6 +57,7 @@ def cadastrar_paciente(request):
      
     return render(request,'Cadastro/cadastrar_pacientes.html')
 '''
+@login_required
 def cadastrar_paciente(request):
     if request.method=='POST':
         #form = CadastroPacientesForm(request.POST)
@@ -81,13 +84,13 @@ def cadastrar_paciente(request):
     else:
         form = CadastroPacientesForm()
      
-    return render(request,'configuracao/cp.html',{'form':form})
-
+    return render(request,'configuracao/cp.html',{'form':form}) #alterado a pasta Cadastro para configuracao e funcionou
+@login_required
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
     
     return render(request,'configuracao/listar_dados.html',{'Pacientes':pacientes})
-
+@login_required
 def remover(request,id):
     paciente = get_object_or_404(CadastroPacientes,pk=id)
     paciente.delete()
