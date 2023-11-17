@@ -9,7 +9,7 @@ from .forms import RegistrationForm
 # Create your views here.
 
 #Fazer novo Acesso
-@login_required
+
 def loginProprietario(request):
     formulario = LoginForm()
     if request.method == 'POST':

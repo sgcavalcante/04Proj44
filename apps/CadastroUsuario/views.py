@@ -20,7 +20,7 @@ def erro(request):
 def configuracao(request):
     return render(request,'configuracao/configuracao.html')
 
-@login_required
+'''
 def login(request):
 
     formulario = LoginForm()
@@ -44,6 +44,7 @@ def login(request):
             return redirect('erro')
     return render(request,'CadastroProprietario/cadastroProprietario.html',{'form':formulario})
 
+'''
 '''
 
 def cadastrar_paciente(request):
@@ -85,6 +86,7 @@ def cadastrar_paciente(request):
         form = CadastroPacientesForm()
      
     return render(request,'configuracao/cp.html',{'form':form}) #alterado a pasta Cadastro para configuracao e funcionou
+
 @login_required
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
