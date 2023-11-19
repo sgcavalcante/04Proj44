@@ -6,8 +6,6 @@ from django.contrib.auth.models import User
 class CadastroPacientes(models.Model):
 
      
-    
-    #usuario = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
 
     nome=models.CharField(
         max_length=120,
@@ -29,7 +27,7 @@ class CadastroPacientes(models.Model):
     data_nascimento=models.DateField(
         null=False,
         blank=False,
-        default=timezone.now
+        
     )
     profissao=models.CharField(
         max_length=40,
@@ -91,4 +89,9 @@ class CadastroPacientes(models.Model):
         null=False,
         blank=False
     )
+    
+class Image(models.Model):
+
+    name = models.CharField(max_length=50,default=None)
+    img = models.ImageField(upload_to='images/',default=None)
     

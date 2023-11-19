@@ -1,6 +1,6 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.contrib import auth
-from apps.CadastroUsuario.forms import LoginForm,CadastroPacientesForm
+from apps.CadastroUsuario.forms import LoginForm,CadastroPacientesForm,ImageForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate
 from apps.CadastroUsuario.models import CadastroPacientes 
@@ -145,3 +145,12 @@ def remover(request,id):
     paciente.delete()
     return redirect('listar_dados')    
 
+def gallery(request):
+    if request.method == 'POST':
+        form = ImageForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return HttpResponse('Imagem armazenada com sucesso!')
+    else:
+        form = ImageForm()
+    return render(request,"gallery_img.html",{"form":form})

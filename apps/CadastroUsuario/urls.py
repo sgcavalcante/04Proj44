@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.CadastroUsuario.views import index,Clinica,erro,configuracao,cadastrar_paciente,listar_dados,remover,editar#login,
+from apps.CadastroUsuario.views import index,Clinica,erro,configuracao,cadastrar_paciente,listar_dados,remover,editar,gallery#login,
 
 
 urlpatterns = [
@@ -11,5 +11,6 @@ urlpatterns = [
             path('cadastrar_paciente',cadastrar_paciente,name='cadastrar_paciente'),
             path('listar_dados',listar_dados,name='listar_dados'),
             path('remover<int:id>',remover,name='remover'),
-            path('editar/<int:id>',editar,name='editar')
+            path('editar/<int:id>',editar,name='editar'),
+            path('gallery',gallery,name='gallery'),
 ]

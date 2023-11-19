@@ -9,7 +9,7 @@ from .forms import RegistrationForm
 # Create your views here.
 
 #Fazer novo Acesso
-
+#@login_required
 def loginProprietario(request):
     formulario = LoginForm()
     if request.method == 'POST':
@@ -32,7 +32,7 @@ def loginProprietario(request):
     return render(request,'CadastroProprietario/loginProprietario.html',{'form':formulario})
 
 #Registrar Novo Usuário no Sistema
-@login_required
+#@login_required
 def registroProprietario(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
