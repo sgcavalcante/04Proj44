@@ -87,6 +87,53 @@ def cadastrar_paciente(request):
      
     return render(request,'configuracao/cp.html',{'form':form}) #alterado a pasta Cadastro para configuracao e funcionou
 
+
+#####
+@login_required
+def editar(request,id):
+    dado = get_object_or_404(CadastroPacientes,pk=id)
+    if request.method =='GET':
+        form = CadastroPacientesForm(initial={
+            'nome':dado.nome,
+            'telefone':dado.telefone,
+            'email':dado.email,
+            'data_nascimento':dado.data_nascimento,
+            'profissao':dado.profissao,
+            'cep':dado.cep,
+            'estado':dado.estado,
+            'cidade':dado.cidade,
+            'bairro':dado.bairro,
+            'numero':dado.numero,
+            'complemento':dado.complemento,
+            'alergia':dado.alergia,
+            'doencas_conhecidas':dado.doencas_conhecidas,
+             
+            })
+    elif request.method =='POST':
+        form = CadastroPacientesForm(request.POST)
+        if form.is_valid():
+            dado.nome = form.cleaned_data['nome']
+            dado.telefone = form.cleaned_data['telefone']
+            dado.email = form.cleaned_data['email']
+            dado.data_nascimento = form.cleaned_data['data_nascimento']
+            dado.profissao = form.cleaned_data['profissao']
+            dado.cep = form.cleaned_data['cep']
+            dado.estado = form.cleaned_data['estado']
+            dado.cidade = form.cleaned_data['cidade']
+            dado.bairro = form.cleaned_data['bairro']
+            dado.numero = form.cleaned_data['numero']
+            dado.complemento = form.cleaned_data['complemento']
+            dado.alergia = form.cleaned_data['alergia']
+            dado.doencas_conhecidas = form.cleaned_data['doencas_conhecidas']
+            dado.save()
+            return redirect('listar_dados')
+                
+    return render (request,'configuracao/Editar_Dados.html',{"form":form,"id":id})
+
+
+###
+
+
 @login_required
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
@@ -97,3 +144,4 @@ def remover(request,id):
     paciente = get_object_or_404(CadastroPacientes,pk=id)
     paciente.delete()
     return redirect('listar_dados')    
+

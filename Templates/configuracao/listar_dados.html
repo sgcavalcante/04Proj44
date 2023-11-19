@@ -51,11 +51,11 @@
                         <td>{{ paciente.doencas_conhecidas }}</td>
 
                         <td>
-                            {% comment  %}
+                            
                             <a href="{% url 'editar' paciente.id %}" class="btn btn-success btn-sm">
                             <i class="bi bi-pencil-square"></i>
                             </a>
-                            {% endcomment  %}
+                           
                             <a href="{% url 'remover' paciente.id %}" class="btn btn-danger btn-sm">
                             <i class="bi bi-trash"></i>
                             </a>
