@@ -93,5 +93,5 @@ class CadastroPacientes(models.Model):
 class Image(models.Model):
 
     name = models.CharField(max_length=50,default=None)
-    img = models.ImageField(upload_to='images/',default=None)
+    imagem = models.ImageField(upload_to='images/',default=None)
     

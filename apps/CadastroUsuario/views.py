@@ -3,7 +3,7 @@ from django.contrib import auth
 from apps.CadastroUsuario.forms import LoginForm,CadastroPacientesForm,ImageForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate
-from apps.CadastroUsuario.models import CadastroPacientes 
+from apps.CadastroUsuario.models import CadastroPacientes,Image
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
@@ -137,8 +137,8 @@ def editar(request,id):
 @login_required
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
-    
     return render(request,'configuracao/listar_dados.html',{'Pacientes':pacientes})
+
 @login_required
 def remover(request,id):
     paciente = get_object_or_404(CadastroPacientes,pk=id)
@@ -154,3 +154,32 @@ def gallery(request):
     else:
         form = ImageForm()
     return render(request,"gallery_img.html",{"form":form})
+
+
+def paciente_acoes(request,id):
+     
+    paciente = get_object_or_404(CadastroPacientes,pk=id)
+    if request.method =='GET':
+        form = CadastroPacientesForm(initial={
+            'nome':paciente.nome,
+            'telefone':paciente.telefone,
+            'email':paciente.email,
+            'data_nascimento':paciente.data_nascimento,
+            'profissao':paciente.profissao,
+            'cep':paciente.cep,
+            'estado':paciente.estado,
+            'cidade':paciente.cidade,
+            'bairro':paciente.bairro,
+            'numero':paciente.numero,
+            'complemento':paciente.complemento,
+            'alergia':paciente.alergia,
+            'doencas_conhecidas':paciente.doencas_conhecidas,
+             
+            })
+    return render(request,'configuracao/paciente_acoes.html',{'Pacientes':paciente,"id":id})
+
+
+def fotos_tratamento(request):
+    fotos = Image.objects.all()
+    return render(request,'configuracao/fotos.html',{'Fotos':fotos})    
+

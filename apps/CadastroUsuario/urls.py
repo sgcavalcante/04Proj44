@@ -1,6 +1,7 @@
 from django.urls import path
-from apps.CadastroUsuario.views import index,Clinica,erro,configuracao,cadastrar_paciente,listar_dados,remover,editar,gallery#login,
-
+from apps.CadastroUsuario.views import index,Clinica,erro,configuracao,cadastrar_paciente,listar_dados,remover,editar,gallery,paciente_acoes,fotos_tratamento#login,
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
             path('',index,name= 'index'),
@@ -13,4 +14,9 @@ urlpatterns = [
             path('remover<int:id>',remover,name='remover'),
             path('editar/<int:id>',editar,name='editar'),
             path('gallery',gallery,name='gallery'),
+            path('paciente_acoes/<int:id>',paciente_acoes,name='paciente_acoes'),
+            path('fotos_tratamento',fotos_tratamento,name='fotos_tratamento'),
+            
 ]
+
+urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
