@@ -1,5 +1,5 @@
 from django import forms
-from .models import CadastroPacientes,Image
+from .models import CadastroPacientes,Image,ImageA
 class LoginForm(forms.Form):
     nome_login = forms.CharField(
         label = 'Usuário',
@@ -37,5 +37,8 @@ class ImageForm(forms.ModelForm):
 
 
 
-
+class ImageAForm(forms.ModelForm):
+    class Meta: 
+        model = ImageA
+        fields = ['name','imagem','nome']
 

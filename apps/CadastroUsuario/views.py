@@ -1,9 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.contrib import auth
-from apps.CadastroUsuario.forms import LoginForm,CadastroPacientesForm,ImageForm
+from apps.CadastroUsuario.forms import LoginForm,CadastroPacientesForm,ImageForm,ImageAForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate
-from apps.CadastroUsuario.models import CadastroPacientes,Image
+from apps.CadastroUsuario.models import CadastroPacientes,Image,ImageA
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
@@ -145,15 +145,6 @@ def remover(request,id):
     paciente.delete()
     return redirect('listar_dados')    
 
-def gallery(request):
-    if request.method == 'POST':
-        form = ImageForm(request.POST,request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('Imagem armazenada com sucesso!')
-    else:
-        form = ImageForm()
-    return render(request,"gallery_img.html",{"form":form})
 
 
 def paciente_acoes(request,id):
@@ -178,8 +169,20 @@ def paciente_acoes(request,id):
             })
     return render(request,'configuracao/paciente_acoes.html',{'Pacientes':paciente,"id":id})
 
+def gallery(request):
+    if request.method == 'POST':
+        form = ImageAForm(request.POST,request.FILES)
+        if form.is_valid():
+             
+            form.save()
+            return HttpResponse('Imagem armazenada com sucesso!')
+            #return redirect('fotos_tratamento/2')
+    else:
+        form = ImageForm()
+    return render(request,"gallery_img.html",{"form":form})
 
-def fotos_tratamento(request):
-    fotos = Image.objects.all()
-    return render(request,'configuracao/fotos.html',{'Fotos':fotos})    
+def fotos_tratamento(request,paciente_id):
+    paciente = get_object_or_404(CadastroPacientes, pk=paciente_id)
+    Fotos = paciente.imagea_set.all()
+    return render(request,'configuracao/fotos.html',{'paciente':paciente,'Fotos':Fotos})    
 

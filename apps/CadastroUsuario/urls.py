@@ -15,7 +15,7 @@ urlpatterns = [
             path('editar/<int:id>',editar,name='editar'),
             path('gallery',gallery,name='gallery'),
             path('paciente_acoes/<int:id>',paciente_acoes,name='paciente_acoes'),
-            path('fotos_tratamento',fotos_tratamento,name='fotos_tratamento'),
+            path('fotos_tratamento/<int:paciente_id>',fotos_tratamento,name='fotos_tratamento'),
             
 ]
 
