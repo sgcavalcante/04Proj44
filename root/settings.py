@@ -30,9 +30,9 @@ SECRET_KEY = str(os.getenv('CHAVE_SECRETA'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['04proj44-production.up.railway.app','127.0.0.1','192.168.0.197']
+ALLOWED_HOSTS = ['04proj44-production.up.railway.app','127.0.0.1','192.168.0.197','www.ivad.com.br']
 
-CSRF_TRUSTED_ORIGINS = ['https://04proj44-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://04proj44-production.up.railway.app','https://www.ivad.com.br']
 
 
 
