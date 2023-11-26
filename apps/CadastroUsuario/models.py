@@ -109,7 +109,9 @@ class ImageA(models.Model):
     
     name = models.CharField(
         max_length=50,
-        default=None
+        default=None,
+        null=True,
+        blank=True
         )
     imagem = models.ImageField(
         upload_to='images/',
@@ -117,4 +119,5 @@ class ImageA(models.Model):
         )
     
      
-    
+    def __str__(self):
+        return f"Imagem de {self.nome.nome}"

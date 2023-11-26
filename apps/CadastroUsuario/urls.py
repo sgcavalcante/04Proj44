@@ -13,7 +13,7 @@ urlpatterns = [
             path('listar_dados',listar_dados,name='listar_dados'),
             path('remover<int:id>',remover,name='remover'),
             path('editar/<int:id>',editar,name='editar'),
-            path('gallery',gallery,name='gallery'),
+            path('gallery/<int:paciente_id>',gallery,name='gallery'),
             path('paciente_acoes/<int:id>',paciente_acoes,name='paciente_acoes'),
             path('fotos_tratamento/<int:paciente_id>',fotos_tratamento,name='fotos_tratamento'),
             

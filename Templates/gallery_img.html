@@ -6,11 +6,18 @@
     <title>Document</title>
 </head>
 <body>
-    <form method = "post" enctype="multipart/form-data">
+   
+         
+        
+        <h1>Adicionar foto a {{ paciente.nome }}</h1>
+
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ Pacientes.nome}}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
-      </form>
+        <input type="file" name="foto">
+        <input type="submit" value="Adicionar">
+    </form>
+       
+        
+        
 </body>
 </html>

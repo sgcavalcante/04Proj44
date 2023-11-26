@@ -168,18 +168,39 @@ def paciente_acoes(request,id):
              
             })
     return render(request,'configuracao/paciente_acoes.html',{'Pacientes':paciente,"id":id})
-
-def gallery(request):
+'''
+def gallery(request,paciente_id):
+    paciente = CadastroPacientes.objects.get(pk=paciente_id)
+    #Fotos = paciente.imagea_set.all() 
     if request.method == 'POST':
         form = ImageAForm(request.POST,request.FILES)
+
         if form.is_valid():
-             
-            form.save()
-            return HttpResponse('Imagem armazenada com sucesso!')
-            #return redirect('fotos_tratamento/2')
+            foto = form.save(commit=False)
+            foto.paciente = paciente
+            foto.save() 
+            #form.save()
+            #return HttpResponse('Imagem armazenada com sucesso!')
+            return redirect('listar_dados')
     else:
-        form = ImageForm()
-    return render(request,"gallery_img.html",{"form":form})
+        form = ImageAForm()
+    return render(request,"gallery_img.html",{"form":form,"paciente":paciente})
+
+'''
+
+
+####
+def gallery(request, paciente_id):
+    paciente = CadastroPacientes.objects.get(pk=paciente_id)
+    if request.method == "POST":
+        foto = request.FILES["foto"]
+        imagem = ImageA(nome=paciente, name=foto.name, imagem=foto)
+        imagem.save()
+        #return redirect("cadastropacientes_list")
+        return redirect('listar_dados')
+    #return render(request, "cadastropacientes_adicionar_foto.html", {"paciente": paciente})
+    return render(request,"gallery_img.html",{"paciente":paciente})
+####
 
 def fotos_tratamento(request,paciente_id):
     paciente = get_object_or_404(CadastroPacientes, pk=paciente_id)
