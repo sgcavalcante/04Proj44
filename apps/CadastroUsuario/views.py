@@ -146,7 +146,7 @@ def remover(request,id):
     return redirect('listar_dados')    
 
 
-
+@login_required
 def paciente_acoes(request,id):
      
     paciente = get_object_or_404(CadastroPacientes,pk=id)
@@ -190,6 +190,7 @@ def gallery(request,paciente_id):
 
 
 ####
+@login_required
 def gallery(request, paciente_id):
     paciente = CadastroPacientes.objects.get(pk=paciente_id)
     if request.method == "POST":
@@ -201,7 +202,7 @@ def gallery(request, paciente_id):
     #return render(request, "cadastropacientes_adicionar_foto.html", {"paciente": paciente})
     return render(request,"gallery_img.html",{"paciente":paciente})
 ####
-
+@login_required
 def fotos_tratamento(request,paciente_id):
     paciente = get_object_or_404(CadastroPacientes, pk=paciente_id)
     Fotos = paciente.imagea_set.all()
