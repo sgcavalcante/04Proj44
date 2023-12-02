@@ -16,9 +16,9 @@
 </head>
  
 <body class="container bg-dark-subtle text-white" style="width:55%; "> 
-    <div class=" bg-secondary fs-2" style="text-align: center;border-radius: 10px;">
+    <div class=" bg-secondary fs-3" style="text-align: center;border-radius: 10px;">
         {% if user.is_authenticated %}
-            <p>Olá {{ user.username }}. Fique à vontade!</p>
+            <p>Olá {{ user.username }}. Fiq ue à vontade!</p>
         {% else %}
             <p>Welcome, new user. Please log in.</p>
         {% endif %}
@@ -28,13 +28,18 @@
     <form method="POST"   action="{% url 'cadastrar_paciente' %}">
         {% csrf_token %}
 
-
+        {{ form.erro }}
         
         <div class="bg-secondary" style="border-radius: 10px; padding:30px">
-           <p class="fs-3" style="text-align: center;">DADOS PESSOAIS</p> 
+           <p class="fs-4" style="text-align: center;">DADOS PESSOAIS</p> 
                 <div style="margin-bottom: 15px ; ">
                     <label for="">Nome Completo</label>
                     <input type="text" name="nome" class="form-control">
+                </div>
+
+                <div class="mesmalinha" style="margin-bottom: 15px " >
+                    <label for="">CPF</label>
+                    <input type="text" name="cpf" class="form-control">
                 </div>
                 <div class="mesmalinha" style="margin-bottom: 15px " >
                     <label for="">Telefone</label>
@@ -53,14 +58,14 @@
                 </div>
         </div>
         <div class="bg-secondary" style="border-radius: 10px; padding:30px; margin-top: 30px;">
-            <p class="fs-3" style="text-align: center;">DADOS PROFISSIONAIS</p>
+            <p class="fs-4" style="text-align: center;">DADOS PROFISSIONAIS</p>
             <div style="margin-bottom: 15px">
                 <label for="">Profissão</label>
                 <input type="text" name="profissao" class="form-control" id="floatingInput">
             </div>
         </div>    
         <div class="bg-secondary" style="border-radius: 10px; padding:30px ;margin-top: 30px;">
-            <p class="fs-3" style="text-align: center;">ENDEREÇO</p>
+            <p class="fs-4" style="text-align: center;">ENDEREÇO</p>
             <div style="margin-bottom: 15px">
             <label for="" >CEP</label >
             <input type="text" name="cep" class="form-control">
@@ -94,7 +99,7 @@
 
 
         <div class="bg-secondary" style="border-radius: 10px; padding:30px ;margin-top: 30px;margin-bottom: 15px">
-                <p class="fs-3" style="text-align: center;">DADOS DE SAÚDE</p>
+                <p class="fs-4" style="text-align: center;">DADOS DE SAÚDE</p>
                 <label for="" >Alergia</label >
                     <!--<input type="text" name="cidade" class="form-control">-->
                     <select class="form-control" name="alergia" id="nivel_tensao_AT">

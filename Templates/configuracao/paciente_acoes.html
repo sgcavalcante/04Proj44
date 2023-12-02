@@ -16,42 +16,55 @@
             <tr>
                 <td>
 
-                    
-                    <div class=" bg-secondary fs-2" style="margin-top: 10px; text-align: center;border-radius: 10px;">
+                    <div class=" bg-secondary fs-2" style="margin: 20px;margin-top: 10px; text-align: center;border-radius: 10px;">
                         <h1>Paciente</h1>  
-                        <h3>Nome:{{ Pacientes.nome }}</h1>
-                            <h3>Email: {{ Pacientes.email }}</h1>
-                                <h3>id: {{ Pacientes.id }} </h3>
-                            </div>
-                            
-                            <div class=" bg-secondary fs-2" style="margin-top: 10px; text-align: center;border-radius: 10px;">
-                                <h1>Orçamento</h1>
-                                <a href="" class="btn btn-success btn-sm">
-                        <i class="bi bi-plus-square-dotted" ></i>
-                    </a>
+                        <h3>Nome:{{ Pacientes.nome }}</h3>
+                        <h3>Email: {{ Pacientes.email }}</h3>
+                        
+                    </div>
+                <div style="display:flex;text-align: center;justify-content: space-between;">
+                    <div style="display:flex ; justify-content: space-between;margin: 20px; width: 250px;
+                            border: 1px solid #ccc;
+                            padding: 10px;
+                            box-sizing: border-box;
+                            margin-right: 10px;">  
+                    <div class=" bg-secondary fs-2" style="width: 250px;height:250px; margin-top: 10px; text-align: center;border-radius: 10px;">
+                        <h2>Orçamento</h2>
+                        <a href="" class="btn btn-success btn-sm">
+                            <i class="bi bi-plus-square-dotted" ></i>
+                        </a>
+                    </div>
                     
-                </div>
-                
-                
-                <div class=" bg-secondary fs-2" style="margin-top: 10px; text-align: center;border-radius: 10px;">
-                    <div>
-                        <h1>Fotos Tratamento</h1>
+                </div> 
+                <div style="display:flex ; justify-content: space-between;margin: 20px; width: 250px;
+                            border: 1px solid #ccc;
+                            padding: 10px;
+                            box-sizing: border-box;
+                            margin-right: 10px;">  
+                    <div class=" bg-secondary fs-2" style="width: 250px; height:250px; margin-top: 10px; text-align: center;border-radius: 10px;">
+                        <h2>Fotos Tratamento</h2>
                         <a href="{% url 'gallery' Pacientes.id %}" class="btn btn-success btn-sm">
                             <i class="bi bi-plus-square-dotted"></i>
                         </a>
                         <a href="{% url 'fotos_tratamento' Pacientes.id %}" class="btn btn-danger btn-sm">
-                            <i class="bi bi-plus-square-dotted"></i>
+                            <i class="bi bi-wallet"></i>
                         </a>
                     </div>
                 </div>
                 
-                
-                <div class=" bg-secondary fs-2" style="margin-top: 10px; text-align: center;border-radius: 10px;">
-                    <h1>Agendamento</h1>
-                    <a href="" class="btn btn-success btn-sm">
-                        <i class="bi bi-plus-square-dotted"></i>
-                    </a>
+                <div style="display:flex ; justify-content: space-between;margin: 20px; width: 250px;
+                            border: 1px solid #ccc;
+                            padding: 10px;
+                            box-sizing: border-box;
+                            margin-right: 10px;">  
+                    <div class=" bg-secondary fs-2" style="width: 250px; height:250px;margin-top: 10px; text-align: center;border-radius: 10px;">
+                        <h2>Agendamento</h2>
+                        <a href="" class="btn btn-success btn-sm">
+                            <i class="bi bi-plus-square-dotted"></i>
+                        </a>
+                    </div>
                 </div>
+            </div>    
             </td>
                 
             </tr>

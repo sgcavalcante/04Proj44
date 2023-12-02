@@ -65,6 +65,7 @@ def cadastrar_paciente(request):
         novo_registro = CadastroPacientes(
             #['nome','telefone','email','data_nascimento','profissao','cep','estado','cidade','bairro','numero','complemento','alergia','doencas_conhecidas']  
             nome = request.POST['nome'],
+            cpf = request.POST['cpf'],
             telefone = request.POST['telefone'],
             email = request.POST['email'],
             data_nascimento = request.POST['data_nascimento'],
@@ -92,9 +93,11 @@ def cadastrar_paciente(request):
 @login_required
 def editar(request,id):
     dado = get_object_or_404(CadastroPacientes,pk=id)
+    
     if request.method =='GET':
         form = CadastroPacientesForm(initial={
             'nome':dado.nome,
+            'cpf':dado.cpf,
             'telefone':dado.telefone,
             'email':dado.email,
             'data_nascimento':dado.data_nascimento,
@@ -107,27 +110,17 @@ def editar(request,id):
             'complemento':dado.complemento,
             'alergia':dado.alergia,
             'doencas_conhecidas':dado.doencas_conhecidas,
-             
             })
     elif request.method =='POST':
-        form = CadastroPacientesForm(request.POST)
+        form = CadastroPacientesForm(request.POST,instance=dado)
+        
         if form.is_valid():
-            dado.nome = form.cleaned_data['nome']
-            dado.telefone = form.cleaned_data['telefone']
-            dado.email = form.cleaned_data['email']
-            dado.data_nascimento = form.cleaned_data['data_nascimento']
-            dado.profissao = form.cleaned_data['profissao']
-            dado.cep = form.cleaned_data['cep']
-            dado.estado = form.cleaned_data['estado']
-            dado.cidade = form.cleaned_data['cidade']
-            dado.bairro = form.cleaned_data['bairro']
-            dado.numero = form.cleaned_data['numero']
-            dado.complemento = form.cleaned_data['complemento']
-            dado.alergia = form.cleaned_data['alergia']
-            dado.doencas_conhecidas = form.cleaned_data['doencas_conhecidas']
-            dado.save()
+             
+            form.save()
             return redirect('listar_dados')
-                
+        else:
+            form = CadastroPacientesForm(instance=dado)
+    print(form)            
     return render (request,'configuracao/Editar_Dados.html',{"form":form,"id":id})
 
 
@@ -153,6 +146,7 @@ def paciente_acoes(request,id):
     if request.method =='GET':
         form = CadastroPacientesForm(initial={
             'nome':paciente.nome,
+            'cpf':paciente.cpf,
             'telefone':paciente.telefone,
             'email':paciente.email,
             'data_nascimento':paciente.data_nascimento,
@@ -168,25 +162,7 @@ def paciente_acoes(request,id):
              
             })
     return render(request,'configuracao/paciente_acoes.html',{'Pacientes':paciente,"id":id})
-'''
-def gallery(request,paciente_id):
-    paciente = CadastroPacientes.objects.get(pk=paciente_id)
-    #Fotos = paciente.imagea_set.all() 
-    if request.method == 'POST':
-        form = ImageAForm(request.POST,request.FILES)
-
-        if form.is_valid():
-            foto = form.save(commit=False)
-            foto.paciente = paciente
-            foto.save() 
-            #form.save()
-            #return HttpResponse('Imagem armazenada com sucesso!')
-            return redirect('listar_dados')
-    else:
-        form = ImageAForm()
-    return render(request,"gallery_img.html",{"form":form,"paciente":paciente})
-
-'''
+ 
 
 
 ####

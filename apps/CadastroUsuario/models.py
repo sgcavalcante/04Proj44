@@ -14,6 +14,14 @@ class CadastroPacientes(models.Model):
         unique=True
     )
 
+    cpf=models.CharField(
+        max_length=20,
+        null=False,
+        blank=False,
+        unique=True,
+        #default=0
+    )
+
     telefone=models.CharField(
         max_length=15,
         null=False,
@@ -41,7 +49,7 @@ class CadastroPacientes(models.Model):
         null=True,
         blank=True
     )
-
+ 
     estado = models.CharField(
         max_length=2,
         null=True,

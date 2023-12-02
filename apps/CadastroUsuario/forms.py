@@ -26,9 +26,7 @@ class LoginForm(forms.Form):
 class CadastroPacientesForm(forms.ModelForm):
     class Meta:
         model = CadastroPacientes
-        fields = ['nome','telefone','email','data_nascimento','profissao','cep','estado','cidade','bairro','numero','complemento','alergia','doencas_conhecidas']   
-
-
+        fields = ['nome','cpf','telefone','email','data_nascimento','profissao','cep','estado','cidade','bairro','numero','complemento','alergia','doencas_conhecidas']   
 
 class ImageForm(forms.ModelForm):
     class Meta: 
