@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paciente Ações</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-</head>
-<body class="container" style="width: 100%;">
-    <div class=" bg-secondary fs-4" style="margin-top: 10px; text-align: center;border-radius: 10px;">
-             
+{% extends 'base.html' %}
+
+{% block conteudo %}
+
+
+ 
+<div class=" bg-secondary fs-4" style="margin-top: 10px; text-align: center;border-radius: 10px;">
+    
+    Paciente: {{ paciente.nome}}
         <table border = 1 class="table table-striped table-hover ">
 
             <thead>
@@ -20,8 +16,8 @@
                         <th>Status</th>
                         <th>Diretório</th>
                         <th>Imagem</th>
-                         Paciente: {{ paciente.nome}}
-                        
+                         
+                          
                         {% for foto in Fotos %}   
                         <tr>
                              
@@ -37,8 +33,4 @@
             </thead>
         </table>    
     </div>
-
-    
-    <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock conteudo %}
