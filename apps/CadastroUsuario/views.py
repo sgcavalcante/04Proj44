@@ -120,7 +120,7 @@ def editar(request,id):
             return redirect('listar_dados')
         else:
             form = CadastroPacientesForm(instance=dado)
-    print(form)            
+               
     return render (request,'configuracao/Editar_Dados.html',{"form":form,"id":id})
 
 
