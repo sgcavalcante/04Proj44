@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.CadastroUsuario.views import index,Clinica,erro,configuracao,cadastrar_paciente,listar_dados,remover,editar,gallery,paciente_acoes,fotos_tratamento#login,
+from apps.CadastroUsuario.views import index,Clinica,erro,configuracao,cadastrar_paciente,listar_dados,remover,editar,gallery,paciente_acoes,fotos_tratamento,search#login,
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -16,6 +16,7 @@ urlpatterns = [
             path('gallery/<int:paciente_id>',gallery,name='gallery'),
             path('paciente_acoes/<int:id>',paciente_acoes,name='paciente_acoes'),
             path('fotos_tratamento/<int:paciente_id>',fotos_tratamento,name='fotos_tratamento'),
+            path('search',search,name='search'),
             
 ]
 

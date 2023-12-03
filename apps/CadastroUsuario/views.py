@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate
 from apps.CadastroUsuario.models import CadastroPacientes,Image,ImageA
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q # para fazer filtro
 # Create your views here.
 
 def index(request):
@@ -131,6 +132,16 @@ def editar(request,id):
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
     return render(request,'configuracao/listar_dados.html',{'Pacientes':pacientes})
+
+
+######################
+def search(request):
+    nome = request.GET.get('nome')
+    pacientes = CadastroPacientes.objects.all()
+    if nome:
+        pacientes = pacientes.filter(nome__icontains=nome)
+    return render(request,'configuracao/listar_dados_filtro.html',{'Pacientes':pacientes})
+######################
 
 @login_required
 def remover(request,id):
