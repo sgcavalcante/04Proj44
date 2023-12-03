@@ -16,7 +16,7 @@ urlpatterns = [
             path('gallery/<int:paciente_id>',gallery,name='gallery'),
             path('paciente_acoes/<int:id>',paciente_acoes,name='paciente_acoes'),
             path('fotos_tratamento/<int:paciente_id>',fotos_tratamento,name='fotos_tratamento'),
-            path('search',search,name='search'),
+            #path('search',search,name='search'),
             
 ]
 

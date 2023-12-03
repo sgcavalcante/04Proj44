@@ -135,7 +135,9 @@ def listar_dados(request):
 
 
 ######################
-def search(request):
+#def search(request):
+@login_required
+def listar_dados(request):
     nome = request.GET.get('nome')
     pacientes = CadastroPacientes.objects.all()
     if nome:
