@@ -1,5 +1,5 @@
 from django.urls import path
-from apps.CadastroUsuario.views import index,Clinica,erro,configuracao,cadastrar_paciente,listar_dados,remover,editar,gallery,paciente_acoes,fotos_tratamento,search#login,
+from apps.CadastroUsuario.views import index,Clinica,erro,configuracao,cadastrar_paciente,listar_dados,remover,editar,gallery,paciente_acoes,fotos_tratamento#login,
 from django.conf.urls.static import static
 from django.conf import settings
 

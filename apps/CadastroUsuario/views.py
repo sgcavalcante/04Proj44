@@ -128,13 +128,14 @@ def editar(request,id):
 ###
 
 
+'''
 @login_required
 def listar_dados(request):
     pacientes = CadastroPacientes.objects.all()
     return render(request,'configuracao/listar_dados.html',{'Pacientes':pacientes})
+'''
 
 
-######################
 #def search(request):
 @login_required
 def listar_dados(request):
@@ -143,7 +144,7 @@ def listar_dados(request):
     if nome:
         pacientes = pacientes.filter(nome__icontains=nome)
     return render(request,'configuracao/listar_dados_filtro.html',{'Pacientes':pacientes})
-######################
+
 
 @login_required
 def remover(request,id):

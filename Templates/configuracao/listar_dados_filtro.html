@@ -3,7 +3,7 @@
 <body class="container fs-6" >
     <h1 style = "text-align: center;margin-top: 5%;"	>Pacientes Cadastrados</h1>
 
-    <form method="get" action="{% url 'search' %}">
+    <form method="get" action="{% url 'listar_dados' %}">
         {% csrf_token %}
         <label for="nome">Nome:</label>
         <input type="text" name="nome" value="{{ request.GET.nome }}">
