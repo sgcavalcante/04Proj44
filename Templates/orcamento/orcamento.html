@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block conteudo %}
+<h2>Criar Orçamento para {{ paciente.nome }}</h2>
+<form method="post" action="{% url 'criar_orcamento' paciente.id %}">
+    {% csrf_token %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Procedimentos Disponíveis</th>
+                <th>Valor do Procedimento</th>
+                <th>Selecionar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for procedimento in form.procedimentos.field.queryset %}
+                <tr>
+                    <td>{{ procedimento.descricao }}</td>
+                    <td>{{ procedimento.valor_procedimento }}</td>
+                    <td>{{ form.procedimentos }} {{ procedimento.id }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>Valor Total: R$ <span id="valorTotal">0.00</span></p>
+
+    <button type="submit">Criar Orçamento</button>
+</form>
+
+<script>
+    // Adicione um script para calcular o valor total dinamicamente
+    document.addEventListener('change', function(event) {
+        if (event.target.name === 'procedimentos') {
+            calcularValorTotal();
+        }
+    });
+
+    function calcularValorTotal() {
+        var checkboxes = document.querySelectorAll('input[name="procedimentos"]:checked');
+        var valorTotal = Array.from(checkboxes).reduce(function(acc, checkbox) {
+            return acc + parseFloat(checkbox.value);
+        }, 0);
+
+        document.getElementById('valorTotal').textContent = valorTotal.toFixed(2);
+    }
+</script>
+{% endblock conteudo %}
