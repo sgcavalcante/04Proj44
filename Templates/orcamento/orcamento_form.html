@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block conteudo %}
+<h3>Seleção de Dente e Procedimentos</h3>
+<div  class="container text-center border-top border-bottom border-inner border-success" >
+            
+    <div class="row row-1-cols-16" style="width: 100%;">
+    <div class="col"style = ""><h4>{{ paciente.nome }} </h4></div>    
+    <div class="col"><h4>{{ dente.nome_dente }}  </h4></div>    
+    <div class="col"><img style="max-width: 100px;" src="{{ dente.imagem_dente.url }}" ></div>  
+</div>  
+</div> 
+ 
+
+
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form_dente.as_p }}
+    <button type="submit" name="selecionar_dente">Selecionar Dente e Procedimentos</button>
+    <button type="submit" name="finalizar_orcamento">Finalizar Orçamento</button>
+</form>
+{% endblock conteudo %}

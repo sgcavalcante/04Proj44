@@ -101,12 +101,7 @@ class CadastroPacientes(models.Model):
 
     def __str__(self):
         return self.nome
-    
-class Image(models.Model):
-    #nome = models.ForeignKey(CadastroPacientes,on_delete=models.CASCADE,default=None)
-    name = models.CharField(max_length=50,default=None)
-    imagem = models.ImageField(upload_to='images/',default=None)
-    
+   
 class ImageA(models.Model):
     
     nome = models.ForeignKey(

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block conteudo %}
+
+<ul>
+     
+    {% for procedimento in procedimentos %}
+    <li>
+        <input type="checkbox" name="procedimentos" value="{{ procedimento.id }}">
+        {{ procedimento.descricao }}
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock conteudo %}

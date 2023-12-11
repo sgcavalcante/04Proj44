@@ -1,9 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404,HttpResponse
 from django.contrib import auth
-from apps.CadastroUsuario.forms import LoginForm,CadastroPacientesForm,ImageForm,ImageAForm
+from apps.CadastroUsuario.forms import LoginForm,CadastroPacientesForm,ImageAForm
 from django.contrib.auth.models import User
 from django.contrib.auth import login,authenticate
-from apps.CadastroUsuario.models import CadastroPacientes,Image,ImageA
+from apps.CadastroUsuario.models import CadastroPacientes,ImageA
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q # para fazer filtro
 # Create your views here.

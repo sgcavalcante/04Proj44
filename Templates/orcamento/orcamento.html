@@ -3,49 +3,127 @@
 
 
 {% block conteudo %}
-<h2>Criar Orçamento para {{ paciente.nome }}</h2>
-<form method="post" action="{% url 'criar_orcamento' paciente.id %}">
+<!--/////////////////////////////////////////////////////////////-->
+<form   method="post">
     {% csrf_token %}
+<div  class="container  border border-success"  >
+    <div class="fs-6">
+        <h3>Orçamento: {{ paciente.nome }}</h3>
+    </div>
+</div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Procedimentos Disponíveis</th>
-                <th>Valor do Procedimento</th>
-                <th>Selecionar</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for procedimento in form.procedimentos.field.queryset %}
-                <tr>
-                    <td>{{ procedimento.descricao }}</td>
-                    <td>{{ procedimento.valor_procedimento }}</td>
-                    <td>{{ form.procedimentos }} {{ procedimento.id }}</td>
-                </tr>
+ 
+<!--/////////////////////////////////////////////////////////////-->
+
+
+ 
+<hr>
+<div  class="container  border border-success"  >
+    <div class="fs-6">
+        <h3 class = "center-tex"t>Cavidade Oral Completa</h3>
+        <ul>
+            {% for procedimento in procedimentos %}
+            <li>
+                <input type="checkbox" name="procedimentos" value="{{ procedimento.id }}">
+                {{ procedimento.descricao }}
+            </li>
             {% endfor %}
-        </tbody>
-    </table>
+        </ul>
+    </div>
+</div>
 
-    <p>Valor Total: R$ <span id="valorTotal">0.00</span></p>
+<hr>
+<div  class="container  border border-success"  >
+    <div class="fs-6">
+        <h3>Arco Superior</h3>
+        <div  class="container text-center border-top border-bottom border-inner border-success" >
+            
+            <div class="row row-2-cols-16" style="width: 100%;">
+                <!--
+                    <a href="{% url 'Clinica' %}">
+                        <img style="margin:45%;"; src="{% static 'img/Clinica/assinatura.jpg' %}"    >
+                    </a>
+                -->
+                
 
-    <button type="submit">Criar Orçamento</button>
+                {% for foto in dentes_fotos %}   
+                    <a href="{% url 'criar_orcamento' paciente_id=paciente.id dente_id=foto.id %}">
+                        {{foto.id}}
+                        <img style="max-width: 100px;" src="{{ foto.imagem_dente.url }}" >
+                    </a>
+                {% endfor %}
+
+                {% comment %}
+                <div class="col">1
+                    <a href="{% url 'criar_orcamento' paciente.id %}"><img src="{% static 'img/Odontograma/Canino.PNG' %}" alt="" for="1"></a></div>    
+                    
+                <div class="col">2<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">3<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">4<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">5<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">6<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">7<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">8<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">9<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">10<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">11<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">12<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">13<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">14<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">15<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                <div class="col">16<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+            </div>
+        </div>
+        <ul>
+            {% for procedimento in procedimentos %}
+                <li>
+                    <input type="checkbox" name="procedimentos" value="{{ procedimento.id }}">
+                    {{ procedimento.descricao }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<hr>
+<div  class="container  border border-success"  > 
+    <div class="fs-6">
+            <h3>Arco Inferior</h3>
+            <div  class="container text-center border-top border-bottom border-inner border-success" >
+                
+                <div class="row row-2-cols-16" style="width: 100%;">
+                    <div class="col">1<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">2<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">3<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">4<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">5<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">6<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">7<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">8<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">9<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">10<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">11<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">12<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">13<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">14<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">15<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">16<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">17<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                    <div class="col">18<img src="{% static 'img/Odontograma/Canino.png' %}" alt=""></div>
+                </div>
+            </div>
+            <ul>
+                {% for procedimento in procedimentos %}
+                    <li>
+                        <input type="checkbox" name="procedimentos" value="{{ procedimento.id }}">
+                        {{ procedimento.descricao }}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endcomment %}
+        </div>
+</div>
 </form>
+<hr>
+<input type="submit" value="Gerar orçamento">
 
-<script>
-    // Adicione um script para calcular o valor total dinamicamente
-    document.addEventListener('change', function(event) {
-        if (event.target.name === 'procedimentos') {
-            calcularValorTotal();
-        }
-    });
-
-    function calcularValorTotal() {
-        var checkboxes = document.querySelectorAll('input[name="procedimentos"]:checked');
-        var valorTotal = Array.from(checkboxes).reduce(function(acc, checkbox) {
-            return acc + parseFloat(checkbox.value);
-        }, 0);
-
-        document.getElementById('valorTotal').textContent = valorTotal.toFixed(2);
-    }
-</script>
 {% endblock conteudo %}
