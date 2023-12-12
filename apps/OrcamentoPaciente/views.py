@@ -4,7 +4,7 @@ from .models import Procedimento,Orcamento,Dentes
 from apps.CadastroUsuario.models import CadastroPacientes
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
-from .forms import OrcamentoItemForm
+from .forms import OrcamentoItemForm,DentesForm
 
 def criar_orcamento(request, paciente_id,dente_id):
     paciente = CadastroPacientes.objects.get(id=paciente_id)
@@ -52,4 +52,15 @@ def teste(request,dente_id):
     return render(request,'orcamento/orcamento_dente.html',{'fotos_dentes':fotos_dentes})
 
 
- 
+
+def inserir_fotos_dentes(request):
+
+    if request.method == 'POST':
+        form = DentesForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('inserir_fotos_dentes')  # Redirecionar para a lista de dentes após o upload
+    else:
+        form = DentesForm()
+
+    return render(request, 'inserir_fotos_dentes.html', {'form': form})

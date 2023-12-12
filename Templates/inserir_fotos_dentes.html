@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block conteudo %}
+    <div class = container>
+        <hr>
+        <h1 style="text-align: center;">Adicionar foto de Dentes:  {{ paciente.nome }}</h1>
+        <hr>
+        <div class = form-control style = "text-align: center; margin: auto";>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Adicionar Dente</button>
+              </form>
+              <a href="{% url 'configuracao' %}">Voltar para Configuração</a>
+            
+            
+        </div>
+    </div>    
+{% endblock conteudo %}
