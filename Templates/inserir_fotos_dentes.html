@@ -8,7 +8,7 @@
         <h1 style="text-align: center;">Adicionar foto de Dentes:  {{ paciente.nome }}</h1>
         <hr>
         <div class = form-control style = "text-align: center; margin: auto";>
-
+            
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
@@ -16,7 +16,32 @@
               </form>
               <a href="{% url 'configuracao' %}">Voltar para Configuração</a>
             
-            
+              
+              <hr>    
+
+              <table border = 1 class="table table-striped table-hover ">
+
+                <thead>
+                    <tbody>
+                        <tr>
+                            <th>Nome Dente</th>
+                            <th>Imagem</th>
+                             
+                              
+                            {% for fotos_dentes in fotos_dentes %}   
+                            <tr>
+                                 
+                                <td>{{ fotos_dentes.nome_dente}}</td>
+                                 
+                                 
+                                <td><img style="max-width: 100px;" src= {{fotos_dentes.imagem_dente.url}} ></td>
+                                  
+                            </tr>
+                            {% endfor %}    
+                        </tr>
+                    </tbody>
+                </thead>
+            </table>    
         </div>
     </div>    
 {% endblock conteudo %}

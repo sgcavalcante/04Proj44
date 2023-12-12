@@ -8,7 +8,7 @@ class OrcamentoItemForm(forms.ModelForm):
     class Meta:
         model = OrcamentoItem
         fields = ['dente', 'procedimentos']
-
+        
 class DentesForm(forms.ModelForm):
     class Meta:
         model = Dentes

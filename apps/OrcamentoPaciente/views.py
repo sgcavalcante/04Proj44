@@ -54,7 +54,7 @@ def teste(request,dente_id):
 
 
 def inserir_fotos_dentes(request):
-
+    fotos_dentes = Dentes.objects.all() # apenas para pegar a models Dentes e mostrar no template de inserir fotos de dentes
     if request.method == 'POST':
         form = DentesForm(request.POST, request.FILES)
         if form.is_valid():
@@ -63,4 +63,4 @@ def inserir_fotos_dentes(request):
     else:
         form = DentesForm()
 
-    return render(request, 'inserir_fotos_dentes.html', {'form': form})
+    return render(request, 'inserir_fotos_dentes.html', {'form': form,'fotos_dentes':fotos_dentes})
