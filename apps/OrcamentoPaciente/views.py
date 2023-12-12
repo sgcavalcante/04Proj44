@@ -10,7 +10,7 @@ def criar_orcamento(request, paciente_id,dente_id):
     paciente = CadastroPacientes.objects.get(id=paciente_id)
     dente = Dentes.objects.get(id=dente_id) 
      
-     
+    ####### 
     if request.method == 'POST':
         if 'selecionar_dente' in request.POST:
             form_dente = OrcamentoItemForm(request.POST)
