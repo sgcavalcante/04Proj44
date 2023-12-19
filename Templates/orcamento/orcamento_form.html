@@ -1,25 +1,30 @@
 {% extends "base.html" %}
 {% load static %}
 
-
 {% block conteudo %}
-<h3>Seleção de Dente e Procedimentos</h3>
-<div  class="container text-center border-top border-bottom border-inner border-success" >
-            
+    <h3 style="text-align: center;">Seleção de Dente e Procedimentos</h3>
+
     <div class="row row-1-cols-16" style="width: 100%;">
-    <div class="col"style = ""><h4>{{ paciente.nome }} </h4></div>    
-    <div class="col"><h4>{{ dente.nome_dente }}  </h4></div>    
-    <div class="col"><img style="max-width: 100px;" src="{{ dente.imagem_dente.url }}" ></div>  
-</div>  
-</div> 
- 
+        <div class="col" >Paciente: <h4>{{ paciente.nome }}</h4></div>
+    </div>
 
+    <div class="container text-center border-top border-bottom border-inner border-success">
+        <form method="POST" action="{% url 'cadastrar_item' %}">
+            {% csrf_token %}
+            <div class="col">
+                <img style="max-width: 100px;" src="{{ dente.imagem_dente.url }}">
+                <input class="btn" type="text" name="paciente" value="{{ paciente.nome }}">
+                <input class="btn" type="text" name="dente" value="{{ dente.nome_dente }}">
+                
+                {% for procedimento in procedimentos %}
+                    <input type="checkbox" name="procedimento" value="{{ procedimento.id }}">
+                    {{ procedimento.descricao }}<br>
+                {% endfor %}
+            </div>
 
-
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form_dente.as_p }}
-    <button type="submit" name="selecionar_dente">Selecionar Dente e Procedimentos</button>
-    <button type="submit" name="finalizar_orcamento">Finalizar Orçamento</button>
-</form>
+            <div>
+                <input class="btn btn-sm btn-dark" type="submit" value="Salvar">
+            </div>
+        </form>
+    </div>
 {% endblock conteudo %}
