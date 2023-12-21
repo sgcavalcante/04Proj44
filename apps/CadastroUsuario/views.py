@@ -65,6 +65,7 @@ def cadastrar_paciente(request):
         #form = CadastroPacientesForm(request.POST)
         novo_registro = CadastroPacientes(
             #['nome','telefone','email','data_nascimento','profissao','cep','estado','cidade','bairro','numero','complemento','alergia','doencas_conhecidas']  
+            usuario = request.user,
             nome = request.POST['nome'],
             cpf = request.POST['cpf'],
             telefone = request.POST['telefone'],
@@ -94,7 +95,7 @@ def cadastrar_paciente(request):
 @login_required
 def editar(request,id):
     dado = get_object_or_404(CadastroPacientes,pk=id)
-    
+    #dado = CadastroPacientes.objects.filter(usuario=request.user)
     if request.method =='GET':
         form = CadastroPacientesForm(initial={
             'nome':dado.nome,
@@ -140,7 +141,7 @@ def listar_dados(request):
 @login_required
 def listar_dados(request):
     nome = request.GET.get('nome')
-    pacientes = CadastroPacientes.objects.all()
+    pacientes = CadastroPacientes.objects.filter(usuario=request.user)
     if nome:
         pacientes = pacientes.filter(nome__icontains=nome)
     return render(request,'configuracao/listar_dados_filtro.html',{'Pacientes':pacientes})
@@ -148,6 +149,7 @@ def listar_dados(request):
 
 @login_required
 def remover(request,id):
+    paciente = CadastroPacientes.objects.filter(usuario=request.user)
     paciente = get_object_or_404(CadastroPacientes,pk=id)
     paciente.delete()
     return redirect('listar_dados')    
@@ -157,8 +159,10 @@ def remover(request,id):
 def paciente_acoes(request,id):
      
     paciente = get_object_or_404(CadastroPacientes,pk=id)
+    
     if request.method =='GET':
         form = CadastroPacientesForm(initial={
+            
             'nome':paciente.nome,
             'cpf':paciente.cpf,
             'telefone':paciente.telefone,
@@ -182,7 +186,9 @@ def paciente_acoes(request,id):
 ####
 @login_required
 def gallery(request, paciente_id):
+    
     paciente = CadastroPacientes.objects.get(pk=paciente_id)
+    
     if request.method == "POST":
         foto = request.FILES["foto"]
         imagem = ImageA(nome=paciente, name=foto.name, imagem=foto)
@@ -195,6 +201,7 @@ def gallery(request, paciente_id):
 @login_required
 def fotos_tratamento(request,paciente_id):
     paciente = get_object_or_404(CadastroPacientes, pk=paciente_id)
+    
     Fotos = paciente.imagea_set.all()
     return render(request,'configuracao/fotos.html',{'paciente':paciente,'Fotos':Fotos})    
 

@@ -4,7 +4,7 @@ from django.db.models import QuerySet
 from apps.CadastroUsuario.models import CadastroPacientes
 from .models import Procedimento,Orcamento,Dentes, OrcamentoItem,CriarOrcamento  
 from .forms import OrcamentoItemForm,DentesForm,CadastrarItemForm#EscolherProcedimentoForm,
-
+from django.contrib.auth.decorators import login_required
 
 
 def cadastrar_item(request):
@@ -18,17 +18,19 @@ def cadastrar_item(request):
             form = CadastrarItemForm()
     return redirect('erro_orcamento')
     
-
-
+@login_required
 def listar_orcamento(request):
-    orcamentos = CriarOrcamento.objects.all()
-    return render(request,'orcamento/listar_orcamento.html',{'orcamentos':orcamentos})
+    # Filtra os orçamentos pelo usuário logado
+    orcamentos = CriarOrcamento.objects.filter(usuario=request.user)
+    return render(request, 'orcamento/listar_orcamento.html', {'orcamentos': orcamentos})
+ 
     
 
 
 
-
+@login_required
 def criar_orcamento(request, paciente_id,dente_id):
+    
     paciente = CadastroPacientes.objects.get(id=paciente_id)
     dente = Dentes.objects.get(id=dente_id) 
     orcamentos = Orcamento.objects.all() 
@@ -41,7 +43,7 @@ def criar_orcamento(request, paciente_id,dente_id):
             #procedimentoForm = EscolherProcedimentoForm(request.POST)
             if form_dente.is_valid():
                 orcamento_item = form_dente.save(commit=False)
-                orcamento_item.orcamento = Orcamento.objects.create(paciente=paciente)
+                orcamento_item.orcamento = Orcamento.objects.create(paciente=paciente, usuario=request.user)
                 orcamento_item.save()
                 return redirect('criar_orcamento', paciente_id=paciente_id,dente_id=dente_id)
         elif 'finalizar_orcamento' in request.POST:

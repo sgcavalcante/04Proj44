@@ -40,12 +40,14 @@
                 <div class="row row-2-cols-16" style="width: 100%;">
                     {% for foto in dentes_fotos %}   
                     <div class="col">
+                         
                         <a href="{% url 'criar_orcamento' paciente_id=paciente.id dente_id=foto.id %}">
                             {% comment %}
                             {{foto.id}}
                             {% endcomment %}
-                            <img style="max-width: 100px;" src="{{ foto.imagem_dente.url }}" >
+                            <img  src="{{ foto.imagem_dente.url }}"  >
                         </a>
+                         
                     </div> 
                     {% endfor %}
                 </div>

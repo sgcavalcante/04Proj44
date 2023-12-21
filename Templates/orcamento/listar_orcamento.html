@@ -9,14 +9,15 @@
               <tr>
                  
                   <th>#</th>
+                  <th>Profissional</th>
                   <th>Nome</th>
                   <th>Dente</th>
                   <th>Procedimento</th>
                   <th>Ações</th>
                   {% for orcamento in orcamentos %}
                     <tr>
-                        
                         <td>{{ orcamento.id }}</td>
+                        <td>{{ orcamento.usuario }}</td>
                         <td>{{ orcamento.paciente }}</td>
                         <td>{{ orcamento.dente }}</td>
                         <td>{{ orcamento.procedimento }}</td>
