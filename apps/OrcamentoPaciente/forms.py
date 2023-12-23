@@ -18,12 +18,22 @@ class DentesForm(forms.ModelForm):
 #class EscolherProcedimentoForm(forms.Form):
     #procedimento = forms.ModelChoiceField(queryset=Procedimento.objects.all())
 
-class CadastrarItemForm(forms.ModelForm):
-     paciente = forms.CharField(max_length=120)
-     dente = forms.CharField(max_length=120)
-     procedimento = forms.ModelChoiceField(queryset=Procedimento.objects.all())
+from django import forms
+from .models import CriarOrcamento
 
-     class Meta:
+class CadastrarItemForm(forms.ModelForm):
+    paciente = forms.CharField(max_length=120)
+    dente = forms.CharField(max_length=120)
+    procedimento = forms.ModelChoiceField(queryset=Procedimento.objects.all())
+    
+    class Meta:
         model = CriarOrcamento
-        fields = ['paciente', 'dente', 'procedimento']
+        fields = ['paciente', 'dente', 'procedimento', 'usuario']
+        widgets = {
+            'usuario': forms.HiddenInput(),
+        }
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['usuario'].initial = user
     

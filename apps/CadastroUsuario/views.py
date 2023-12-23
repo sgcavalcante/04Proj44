@@ -21,44 +21,7 @@ def erro(request):
 def configuracao(request):
     return render(request,'configuracao/configuracao.html')
 
-'''
-def login(request):
 
-    formulario = LoginForm()
-
-    if request.method == 'POST':
-        formulario = LoginForm(request.POST)
-        if formulario.is_valid():
-            nome = formulario['nome_login'].value()
-            senha = formulario['senha'].value()
-
-        usuario = auth.authenticate(
-            request,
-            username = nome,
-            password = senha
-        )    
-        if usuario is not None:
-            auth.login(request,usuario)
-            return redirect('configuracao')
-        
-        else:
-            return redirect('erro')
-    return render(request,'CadastroProprietario/cadastroProprietario.html',{'form':formulario})
-
-'''
-'''
-
-def cadastrar_paciente(request):
-    if request.method=='POST':
-        form = CadastroPacientesForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_dados')
-    else:
-        form = CadastroPacientesForm()
-     
-    return render(request,'Cadastro/cadastrar_pacientes.html')
-'''
 @login_required
 def cadastrar_paciente(request):
     if request.method=='POST':
@@ -88,7 +51,7 @@ def cadastrar_paciente(request):
     else:
         form = CadastroPacientesForm()
      
-    return render(request,'configuracao/cp.html',{'form':form}) #alterado a pasta Cadastro para configuracao e funcionou
+    return render(request,'Cadastro/cadastropacientes.html',{'form':form}) #alterado a pasta Cadastro para configuracao e funcionou
 
 
 #####
@@ -123,28 +86,17 @@ def editar(request,id):
         else:
             form = CadastroPacientesForm(instance=dado)
                
-    return render (request,'configuracao/Editar_Dados.html',{"form":form,"id":id})
+    return render (request,'Cadastro/Editar_Dados.html',{"form":form,"id":id})
 
 
-###
 
-
-'''
-@login_required
-def listar_dados(request):
-    pacientes = CadastroPacientes.objects.all()
-    return render(request,'configuracao/listar_dados.html',{'Pacientes':pacientes})
-'''
-
-
-#def search(request):
 @login_required
 def listar_dados(request):
     nome = request.GET.get('nome')
     pacientes = CadastroPacientes.objects.filter(usuario=request.user)
     if nome:
         pacientes = pacientes.filter(nome__icontains=nome)
-    return render(request,'configuracao/listar_dados_filtro.html',{'Pacientes':pacientes})
+    return render(request,'Cadastro/listar_dados_filtro.html',{'Pacientes':pacientes})
 
 
 @login_required
@@ -179,7 +131,7 @@ def paciente_acoes(request,id):
             'doencas_conhecidas':paciente.doencas_conhecidas,
              
             })
-    return render(request,'configuracao/paciente_acoes.html',{'Pacientes':paciente,"id":id})
+    return render(request,'Cadastro/paciente_acoes.html',{'Pacientes':paciente,"id":id})
  
 
 
@@ -196,12 +148,11 @@ def gallery(request, paciente_id):
         #return redirect("cadastropacientes_list")
         return redirect('listar_dados')
     #return render(request, "cadastropacientes_adicionar_foto.html", {"paciente": paciente})
-    return render(request,"gallery_img.html",{"paciente":paciente})
+    return render(request,"Cadastro/gallery_img.html",{"paciente":paciente})
 ####
 @login_required
 def fotos_tratamento(request,paciente_id):
     paciente = get_object_or_404(CadastroPacientes, pk=paciente_id)
     
     Fotos = paciente.imagea_set.all()
-    return render(request,'configuracao/fotos.html',{'paciente':paciente,'Fotos':Fotos})    
-
+    return render(request,'Cadastro/fotos.html',{'paciente':paciente,'Fotos':Fotos})    

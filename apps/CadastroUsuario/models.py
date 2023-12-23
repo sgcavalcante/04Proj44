@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class CadastroPacientes(models.Model):
 
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE,default=5)  
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)  
 
     nome=models.CharField(
         max_length=120,

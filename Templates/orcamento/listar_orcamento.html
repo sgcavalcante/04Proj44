@@ -2,6 +2,7 @@
 {% block conteudo %}
 <body class="container fs-6" >
     <h1 style = "text-align: center;margin-top: 5%;"	>Pacientes Cadastrados</h1>
+     
     <table border = 1 class="table table-striped table-hover ">
         
         <thead>
@@ -14,6 +15,7 @@
                   <th>Dente</th>
                   <th>Procedimento</th>
                   <th>Ações</th>
+                  
                   {% for orcamento in orcamentos %}
                     <tr>
                         <td>{{ orcamento.id }}</td>
@@ -21,6 +23,7 @@
                         <td>{{ orcamento.paciente }}</td>
                         <td>{{ orcamento.dente }}</td>
                         <td>{{ orcamento.procedimento }}</td>
+                        
                         
                         
                         <td>

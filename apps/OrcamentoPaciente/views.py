@@ -3,47 +3,52 @@ from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from apps.CadastroUsuario.models import CadastroPacientes
 from .models import Procedimento,Orcamento,Dentes, OrcamentoItem,CriarOrcamento  
-from .forms import OrcamentoItemForm,DentesForm,CadastrarItemForm#EscolherProcedimentoForm,
+from .forms import OrcamentoItemForm,DentesForm,OrcamentoItemForm,CadastrarItemForm
 from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def cadastrar_item(request):
-    if request.method=='POST':
-        form = CadastrarItemForm(request.POST)
-        print(form)
+    if request.method == 'POST':
+        form = CadastrarItemForm(request.user, request.POST)
         if form.is_valid():
-            form.save()
+            orcamento = form.save(commit=False)
+            orcamento.usuario = request.user
+            orcamento.save()
             return redirect('listar_orcamento')
-        else:
-            form = CadastrarItemForm()
+    else:
+        # Certifique-se de passar o formulário com o usuário para a renderização do template
+        form = CadastrarItemForm(request.user)
+
+     
+            
     return redirect('erro_orcamento')
     
+
+ 
 @login_required
 def listar_orcamento(request):
-    # Filtra os orçamentos pelo usuário logado
-    orcamentos = CriarOrcamento.objects.filter(usuario=request.user)
-    return render(request, 'orcamento/listar_orcamento.html', {'orcamentos': orcamentos})
- 
+    orcamentos_do_usuario = CriarOrcamento.objects.filter(usuario=request.user)
+     
+    return render(request, 'orcamento/listar_orcamento.html', {'orcamentos': orcamentos_do_usuario})
     
 
 
 
 @login_required
 def criar_orcamento(request, paciente_id,dente_id):
-    
     paciente = CadastroPacientes.objects.get(id=paciente_id)
     dente = Dentes.objects.get(id=dente_id) 
     orcamentos = Orcamento.objects.all() 
     orcamentos_items = OrcamentoItem.objects.all()
     procedimentos = Procedimento.objects.all() 
-     
+    ####### 
     if request.method == 'POST':
         if 'selecionar_dente' in request.POST:
             form_dente = OrcamentoItemForm(request.POST)
-            #procedimentoForm = EscolherProcedimentoForm(request.POST)
+            procedimentoForm = OrcamentoItemForm(request.POST)
             if form_dente.is_valid():
                 orcamento_item = form_dente.save(commit=False)
-                orcamento_item.orcamento = Orcamento.objects.create(paciente=paciente, usuario=request.user)
+                orcamento_item.orcamento = Orcamento.objects.create(paciente=paciente)
                 orcamento_item.save()
                 return redirect('criar_orcamento', paciente_id=paciente_id,dente_id=dente_id)
         elif 'finalizar_orcamento' in request.POST:
@@ -51,9 +56,8 @@ def criar_orcamento(request, paciente_id,dente_id):
             return redirect('sucesso')
     else:
         form_dente = OrcamentoItemForm()
-        #procedimentoForm = EscolherProcedimentoForm()
-        
-    return render(request, 'orcamento/orcamento_form.html', {'procedimentos':procedimentos,'form_dente': form_dente, 'paciente': paciente,'dente':dente,'orcamentos':orcamentos,'orcamentos_items':orcamentos_items})#,'procedimentoForm':procedimentoForm})
+        procedimentoForm = OrcamentoItemForm()
+    return render(request, 'orcamento/orcamento_form.html', {'procedimentos':procedimentos,'form_dente': form_dente, 'paciente': paciente,'dente':dente,'orcamentos':orcamentos,'orcamentos_items':orcamentos_items,'procedimentoForm':procedimentoForm})
 
  
 def sucesso(request):
@@ -94,4 +98,4 @@ def inserir_fotos_dentes(request):
     else:
         form = DentesForm()
 
-    return render(request, 'inserir_fotos_dentes.html', {'form': form,'fotos_dentes':fotos_dentes})
+    return render(request, 'configuracao/inserir_fotos_dentes.html', {'form': form,'fotos_dentes':fotos_dentes})

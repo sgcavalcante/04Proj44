@@ -22,7 +22,7 @@ class Dentes(models.Model):
 class Orcamento(models.Model):
     paciente = models.ForeignKey(CadastroPacientes, on_delete=models.CASCADE)
     calcular_total = models.BooleanField(default=False)
-
+    
 class OrcamentoItem(models.Model):
     orcamento = models.ForeignKey(Orcamento, on_delete=models.CASCADE)
     dente = models.ForeignKey(Dentes, on_delete=models.CASCADE)
@@ -36,7 +36,7 @@ class OrcamentoItem(models.Model):
 
 
 class CriarOrcamento(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE,default=5)  
+    usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     paciente = models.CharField(max_length=120,null=False,blank=False,unique=False,)
     dente = models.CharField(max_length=120,null=False,blank=False,unique=False,)
     procedimento = models.CharField(max_length=120,null=False,blank=False)
