@@ -51,7 +51,7 @@ def cadastrar_paciente(request):
     else:
         form = CadastroPacientesForm()
      
-    return render(request,'Cadastro/cadastropacientes.html',{'form':form}) #alterado a pasta Cadastro para configuracao e funcionou
+    return render(request,'cadastropaciente/cadastropacientes.html',{'form':form}) #alterado a pasta Cadastro para configuracao e funcionou
 
 
 #####
@@ -86,7 +86,7 @@ def editar(request,id):
         else:
             form = CadastroPacientesForm(instance=dado)
                
-    return render (request,'Cadastro/Editar_Dados.html',{"form":form,"id":id})
+    return render (request,'cadastropaciente/Editar_Dados.html',{"form":form,"id":id})
 
 
 
@@ -96,7 +96,7 @@ def listar_dados(request):
     pacientes = CadastroPacientes.objects.filter(usuario=request.user)
     if nome:
         pacientes = pacientes.filter(nome__icontains=nome)
-    return render(request,'Cadastro/listar_dados_filtro.html',{'Pacientes':pacientes})
+    return render(request,'cadastropaciente/listar_dados_filtro.html',{'Pacientes':pacientes})
 
 
 @login_required
@@ -131,7 +131,7 @@ def paciente_acoes(request,id):
             'doencas_conhecidas':paciente.doencas_conhecidas,
              
             })
-    return render(request,'Cadastro/paciente_acoes.html',{'Pacientes':paciente,"id":id})
+    return render(request,'cadastropaciente/paciente_acoes.html',{'Pacientes':paciente,"id":id})
  
 
 
@@ -148,11 +148,11 @@ def gallery(request, paciente_id):
         #return redirect("cadastropacientes_list")
         return redirect('listar_dados')
     #return render(request, "cadastropacientes_adicionar_foto.html", {"paciente": paciente})
-    return render(request,"Cadastro/gallery_img.html",{"paciente":paciente})
+    return render(request,"cadastropaciente/gallery_img.html",{"paciente":paciente})
 ####
 @login_required
 def fotos_tratamento(request,paciente_id):
     paciente = get_object_or_404(CadastroPacientes, pk=paciente_id)
     
     Fotos = paciente.imagea_set.all()
-    return render(request,'Cadastro/fotos.html',{'paciente':paciente,'Fotos':Fotos})    
+    return render(request,'cadastropacienteo/fotos.html',{'paciente':paciente,'Fotos':Fotos})    
