@@ -14,6 +14,7 @@
                   <th>Nome</th>
                   <th>Dente</th>
                   <th>Procedimento</th>
+                  <th>R$</th>
                   <th>Ações</th>
                   
                   {% for orcamento in orcamentos %}
@@ -22,7 +23,11 @@
                         <td>{{ orcamento.usuario }}</td>
                         <td>{{ orcamento.paciente }}</td>
                         <td>{{ orcamento.dente }}</td>
-                        <td>{{ orcamento.procedimento }}</td>
+                        <td>{{ orcamento.descricao }}</td>
+                        <td>{{ orcamento.procedimento.descricao }}</td>
+                        <td>{{ orcamento.procedimento.valor_procedimento }}</td>
+                        <td>R$ {{ orcamento.procedimento.valor_procedimento|floatformat:2 }}</td>
+                        <td>R$ {{ orcamento.valor_total|floatformat:2 }}</td> <!-- Ajuste para exibir o valor total -->
                         
                         
                         

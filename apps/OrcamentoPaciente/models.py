@@ -28,10 +28,10 @@ class OrcamentoItem(models.Model):
     dente = models.ForeignKey(Dentes, on_delete=models.CASCADE)
     procedimentos = models.ManyToManyField(Procedimento)
     def calcular_total(self):
-        return sum(procedimento.valor for procedimento in self.procedimentos.all())
+        return sum(procedimento.valor_procedimento for procedimento in self.procedimentos.all())
 
     def __str__(self):
-        return f'Orcamento para {self.paciente.nome} em {self.data_criacao}'
+        return f'Orcamento para {self.paciente.nome}'
     
 
 
@@ -39,6 +39,7 @@ class CriarOrcamento(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     paciente = models.CharField(max_length=120,null=False,blank=False,unique=False,)
     dente = models.CharField(max_length=120,null=False,blank=False,unique=False,)
-    procedimento = models.CharField(max_length=120,null=False,blank=False)
+    procedimento = models.ManyToManyField(Procedimento)
      
-    #calcular_total = models.BooleanField(default=False)
+    def calcular_total(self):
+        return sum(procedimento.valor_procedimento for procedimento in self.procedimento.all())
