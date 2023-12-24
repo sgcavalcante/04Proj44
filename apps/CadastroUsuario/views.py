@@ -155,4 +155,4 @@ def fotos_tratamento(request,paciente_id):
     paciente = get_object_or_404(CadastroPacientes, pk=paciente_id)
     
     Fotos = paciente.imagea_set.all()
-    return render(request,'cadastropacienteo/fotos.html',{'paciente':paciente,'Fotos':Fotos})    
+    return render(request,'cadastropaciente/fotos.html',{'paciente':paciente,'Fotos':Fotos})    
