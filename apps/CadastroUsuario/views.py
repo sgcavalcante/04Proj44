@@ -22,6 +22,7 @@ def configuracao(request):
     return render(request,'configuracao/configuracao.html')
 
 
+
 @login_required
 def cadastrar_paciente(request):
     if request.method=='POST':

@@ -2,7 +2,7 @@
 # OrcamentoPaciente/forms.py
 # OrcamentoPaciente/forms.py
 from django import forms
-from .models import OrcamentoItem,Dentes,Procedimento,CriarOrcamento
+from .models import Dentes,Procedimento,CriarOrcamento,OrcamentoItem,TB_Orcamento
 
 class OrcamentoItemForm(forms.ModelForm):
     class Meta:
@@ -14,12 +14,7 @@ class DentesForm(forms.ModelForm):
         model = Dentes
         fields = ['nome_dente', 'imagem_dente']
 
- 
-#class EscolherProcedimentoForm(forms.Form):
-    #procedimento = forms.ModelChoiceField(queryset=Procedimento.objects.all())
 
-from django import forms
-from .models import CriarOrcamento
 
 class CadastrarItemForm(forms.ModelForm):
     paciente = forms.CharField(max_length=120)
@@ -37,3 +32,12 @@ class CadastrarItemForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['usuario'].initial = user
     
+
+
+class CriarNovoOrcamentoForm(forms.ModelForm):
+    class Meta:
+        model = TB_Orcamento
+        fields = ['numero_orcamento','paciente','calcular_total']   
+
+
+   

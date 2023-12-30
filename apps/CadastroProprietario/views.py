@@ -47,3 +47,10 @@ def registroProprietario(request):
     else:
         form = RegistrationForm()
     return render(request,'CadastroProprietario/registroProprietario.html',{'form':form})
+
+@login_required
+def listar_proprietarios(request):
+    nome = request.GET.get('nome')
+    usuarios = User.objects.all()
+     
+    return render(request,'CadastroProprietario/proprietarios.html',{'usuarios':usuarios})

@@ -22,7 +22,7 @@ class Dentes(models.Model):
 class Orcamento(models.Model):
     paciente = models.ForeignKey(CadastroPacientes, on_delete=models.CASCADE)
     calcular_total = models.BooleanField(default=False)
-    
+ 
 class OrcamentoItem(models.Model):
     orcamento = models.ForeignKey(Orcamento, on_delete=models.CASCADE)
     dente = models.ForeignKey(Dentes, on_delete=models.CASCADE)
@@ -32,6 +32,7 @@ class OrcamentoItem(models.Model):
 
     def __str__(self):
         return f'Orcamento para {self.paciente.nome}'
+   
     
 
 
@@ -43,3 +44,11 @@ class CriarOrcamento(models.Model):
      
     def calcular_total(self):
         return sum(procedimento.valor_procedimento for procedimento in self.procedimento.all())
+    
+
+
+class TB_Orcamento(models.Model):
+    numero_orcamento = models.PositiveIntegerField()
+    data_criacao = models.DateTimeField(auto_now_add = True)
+    paciente = models.ForeignKey(CadastroPacientes, on_delete=models.CASCADE)
+    calcular_total = models.BooleanField(default=False)
