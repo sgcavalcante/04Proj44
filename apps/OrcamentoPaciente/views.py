@@ -6,7 +6,7 @@ from .models import Procedimento,Orcamento,Dentes, OrcamentoItem,CriarOrcamento,
 from .forms import OrcamentoItemForm,DentesForm,OrcamentoItemForm,CadastrarItemForm
 from django.contrib.auth.decorators import login_required
 
-cont = 1000
+cont = 1
 @login_required
 def cadastrar_item(request):
     if request.method == 'POST':
@@ -29,6 +29,7 @@ def cadastrar_item(request):
 @login_required
 def listar_orcamento(request):
     orcamentos_do_usuario = CriarOrcamento.objects.filter(usuario=request.user)
+     
     return render(request, 'orcamento/listar_orcamento.html', {'orcamentos': orcamentos_do_usuario})
     
 
@@ -38,18 +39,17 @@ def abir_novo_orcamento(request,paciente_id):
     global cont 
     cont = cont+1
     paciente = get_object_or_404(CadastroPacientes,pk=paciente_id)
-    print(paciente)
-    print(request.method)
+     
     if request.method=='GET':
-        print('teste ok')
+        
         TB_Orcamento.objects.create(paciente_id=paciente_id,numero_orcamento = cont,calcular_total = "False" )  
         orcamentos = TB_Orcamento.objects.filter(paciente_id=paciente_id) 
-        print(orcamentos)
+        
         return render(request,'orcamento/abrir_novo_orcamento.html',{'orcamentos': orcamentos,'paciente':paciente} )
         #return redirect('listar_orcamento')
     else:
         orcamentos = TB_Orcamento.objects.all()
-        print('teste errado')
+         
         return redirect('erro_orcamento')
 
     
@@ -69,8 +69,11 @@ def criar_orcamento(request, paciente_id,dente_id):
         if 'selecionar_dente' in request.POST:
             form_dente = OrcamentoItemForm(request.POST)
             procedimentoForm = OrcamentoItemForm(request.POST)
+            
             if form_dente.is_valid():
                 orcamento_item = form_dente.save(commit=False)
+                #orcamento_item = form_dente.save(commit=False)
+
                 orcamento_item.orcamento = Orcamento.objects.create(paciente=paciente)
                 orcamento_item.save()
                 return redirect('criar_orcamento', paciente_id=paciente_id,dente_id=dente_id)
@@ -93,7 +96,7 @@ def erro_orcamento(request):
 def orcamento(request, paciente_id):
     paciente = CadastroPacientes.objects.get(id=paciente_id)
     dentes_fotos = Dentes.objects.all()
-    print(dentes_fotos)
+     
     procedimentos = Procedimento.objects.all()
      
 
