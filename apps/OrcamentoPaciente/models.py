@@ -26,31 +26,26 @@ class Orcamento(models.Model):
 class TB_Orcamento(models.Model):
     numero_orcamento = models.PositiveIntegerField()
     data_criacao = models.DateTimeField(auto_now_add = True)
-    paciente = models.ForeignKey(CadastroPacientes, on_delete=models.CASCADE)
+    paciente = models.ForeignKey(CadastroPacientes, on_delete=models.CASCADE,related_name='orcamentos_historicos')
     calcular_total = models.BooleanField(default=False)
 
-
-    
 class OrcamentoItem(models.Model):
     orcamento = models.ForeignKey(Orcamento, on_delete=models.CASCADE)
     dente = models.ForeignKey(Dentes, on_delete=models.CASCADE)
     procedimentos = models.ManyToManyField(Procedimento)
-    numero_orcamento = models.ForeignKey(TB_Orcamento, on_delete=models.SET_NULL, null=True, blank=True) 
+    numero_orcamento = models.ForeignKey(TB_Orcamento, on_delete=models.SET_NULL, null=True, blank=True,related_name='itens_orcamento') 
     def calcular_total(self):
         return sum(procedimento.valor_procedimento for procedimento in self.procedimentos.all())
 
     def __str__(self):
         return f'Orcamento para {self.paciente.nome}'
    
-    
-
-
 class CriarOrcamento(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     paciente = models.CharField(max_length=120,null=False,blank=False,unique=False,)
     dente = models.CharField(max_length=120,null=False,blank=False,unique=False,)
     procedimento = models.ManyToManyField(Procedimento)
-    numero_orcamento = models.ForeignKey(TB_Orcamento, on_delete=models.SET_NULL, null=True, blank=True) 
+    numero_orcamento1 = models.ForeignKey(TB_Orcamento, on_delete=models.SET_NULL, null=True, blank=True,related_name='orcamento_criado') 
     def calcular_total(self):
         return sum(procedimento.valor_procedimento for procedimento in self.procedimento.all())
     

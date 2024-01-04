@@ -14,6 +14,8 @@ from pathlib import Path,os
 from dotenv import load_dotenv
 import dj_database_url
 load_dotenv()
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,7 +32,7 @@ SECRET_KEY = str(os.getenv('CHAVE_SECRETA'))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['04proj44-production.up.railway.app','127.0.0.1','192.168.0.197','www.ivad.com.br']
+ALLOWED_HOSTS = ['04proj44-production.up.railway.app','127.0.0.1','192.168.0.197','www.ivad.com.br','www.ventosolares.com.br']
 
 CSRF_TRUSTED_ORIGINS = ['https://04proj44-production.up.railway.app','https://www.ivad.com.br']
 

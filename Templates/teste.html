@@ -7,8 +7,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    
 </head>
 <body>
-    
+    <h1>Lista de Orçamentos para {{ paciente.nome }}</h1>
+
+    {% if orcamentos %}
+        <ul>
+            {% for orcamento in orcamentos %}
+                <li>
+                    <strong>Número do Orçamento:</strong> {{ orcamento.numero_orcamento }}<br>
+                    <strong>Data de Criação:</strong> {{ orcamento.data_criacao }}<br>
+                    <!-- Adicione mais campos conforme necessário -->
+
+                    <!-- Se você quiser listar os itens do orçamento -->
+                    {% if orcamento.itens_orcamento.all %}
+                        <ul>
+                            {% for item in orcamento.itens_orcamento.all %}
+                                <li>
+                                    <strong>Dente:</strong> {{ item.dente.nome }}<br>
+                                    <strong>Procedimentos:</strong>
+                                    {% for procedimento in item.procedimentos.all %}
+                                        {{ procedimento.descricao }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum orçamento encontrado para este paciente.</p>
+    {% endif %}
 </body>
 </html>

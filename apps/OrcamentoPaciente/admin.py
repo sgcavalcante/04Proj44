@@ -5,3 +5,4 @@ admin.site.register(Procedimento)
 admin.site.register(Orcamento)
 admin.site.register(Dentes)
 admin.site.register(TB_Orcamento)
+

@@ -5,8 +5,9 @@ from apps.CadastroUsuario.models import CadastroPacientes
 from .models import Procedimento,Orcamento,Dentes, OrcamentoItem,CriarOrcamento,TB_Orcamento 
 from .forms import OrcamentoItemForm,DentesForm,OrcamentoItemForm,CadastrarItemForm
 from django.contrib.auth.decorators import login_required
+paciente_aux=''
 
-cont = 1
+
 @login_required
 def cadastrar_item(request):
     if request.method == 'POST':
@@ -28,20 +29,26 @@ def cadastrar_item(request):
  
 @login_required
 def listar_orcamento(request):
-    orcamentos_do_usuario = CriarOrcamento.objects.filter(usuario=request.user)
+    orcamentos_do_usuario = CriarOrcamento.objects.filter(usuario=request.user,paciente=paciente_aux)
      
+     
+    print(CriarOrcamento) 
     return render(request, 'orcamento/listar_orcamento.html', {'orcamentos': orcamentos_do_usuario})
     
 
 
 @login_required
 def abir_novo_orcamento(request,paciente_id):
-    global cont 
-    cont = cont+1
-    paciente = get_object_or_404(CadastroPacientes,pk=paciente_id)
+    #via chat
      
+    cont= request.session.get('cont', 1)
+    cont += 1
+    request.session['cont'] = cont
+    ### 
+    paciente = get_object_or_404(CadastroPacientes,pk=paciente_id)
     if request.method=='GET':
         
+         
         TB_Orcamento.objects.create(paciente_id=paciente_id,numero_orcamento = cont,calcular_total = "False" )  
         orcamentos = TB_Orcamento.objects.filter(paciente_id=paciente_id) 
         
@@ -59,21 +66,23 @@ def abir_novo_orcamento(request,paciente_id):
 
 @login_required
 def criar_orcamento(request, paciente_id,dente_id):
+    global paciente_aux
     paciente = CadastroPacientes.objects.get(id=paciente_id)
     dente = Dentes.objects.get(id=dente_id) 
     orcamentos = Orcamento.objects.all() 
     orcamentos_items = OrcamentoItem.objects.all()
     procedimentos = Procedimento.objects.all() 
+    informacao1 = request.session.get('cont', '')  
+    paciente_aux =  CadastroPacientes.objects.get(id=paciente_id)
+    print(f'teste >>>> {paciente_aux}') 
     ####### 
     if request.method == 'POST':
         if 'selecionar_dente' in request.POST:
             form_dente = OrcamentoItemForm(request.POST)
             procedimentoForm = OrcamentoItemForm(request.POST)
-            
             if form_dente.is_valid():
                 orcamento_item = form_dente.save(commit=False)
-                #orcamento_item = form_dente.save(commit=False)
-
+                 
                 orcamento_item.orcamento = Orcamento.objects.create(paciente=paciente)
                 orcamento_item.save()
                 return redirect('criar_orcamento', paciente_id=paciente_id,dente_id=dente_id)
@@ -83,7 +92,7 @@ def criar_orcamento(request, paciente_id,dente_id):
     else:
         form_dente = OrcamentoItemForm()
         procedimentoForm = OrcamentoItemForm()
-    return render(request, 'orcamento/orcamento_form.html', {'procedimentos':procedimentos,'form_dente': form_dente, 'paciente': paciente,'dente':dente,'orcamentos':orcamentos,'orcamentos_items':orcamentos_items,'procedimentoForm':procedimentoForm})
+    return render(request, 'orcamento/orcamento_form.html', {'procedimentos':procedimentos,'form_dente': form_dente, 'paciente': paciente,'dente':dente,'orcamentos':orcamentos,'orcamentos_items':orcamentos_items,'procedimentoForm':procedimentoForm,'informacao1':informacao1})
 
  
 def sucesso(request):
@@ -95,12 +104,11 @@ def erro_orcamento(request):
 
 def orcamento(request, paciente_id):
     paciente = CadastroPacientes.objects.get(id=paciente_id)
+    informacao = request.session.get('cont', '')  
     dentes_fotos = Dentes.objects.all()
-     
     procedimentos = Procedimento.objects.all()
      
-
-    return render(request, 'orcamento/orcamento.html',{'paciente':paciente,'procedimentos':procedimentos,'dentes_fotos':dentes_fotos})
+    return render(request, 'orcamento/orcamento.html',{'paciente':paciente,'procedimentos':procedimentos,'dentes_fotos':dentes_fotos,'informacao':informacao})
 
 def orcamento_dente(request):
     procedimentos = Procedimento.objects.all()
