@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-#from apps.OrcamentoPaciente import urls
+from apps.OrcamentoPaciente import urls
 from apps.CadastroUsuario import urls
 from apps.CadastroProprietario import urls
 
