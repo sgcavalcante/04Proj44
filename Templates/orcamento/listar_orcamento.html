@@ -26,8 +26,8 @@
                         <td>{{ orcamento.numero_orcamento }}</td>
                         <td>{{ orcamento.dente }}</td>
                         <td>{{ orcamento.descricao }}</td>
-                        <td>{{ orcamento.procedimento.descricao }}</td>
-                        <td>{{ orcamento.procedimento.valor_procedimento }}</td>
+                        <td>{{ procedimento.descricao }}</td>
+                        <td>{{ orcamento_criado.valor_procedimento }}</td>
                         <td>R$ {{ orcamento.procedimento.valor_procedimento|floatformat:2 }}</td>
                         <td>R$ {{ orcamento.valor_total|floatformat:2 }}</td> <!-- Ajuste para exibir o valor total -->
                         

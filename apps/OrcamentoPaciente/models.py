@@ -44,8 +44,9 @@ class CriarOrcamento(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     paciente = models.CharField(max_length=120,null=False,blank=False,unique=False,)
     dente = models.CharField(max_length=120,null=False,blank=False,unique=False,)
-    procedimento = models.ManyToManyField(Procedimento)
+    procedimento = models.ManyToManyField(Procedimento,related_name='escolher_procedimento')
     numero_orcamento1 = models.ForeignKey(TB_Orcamento, on_delete=models.SET_NULL, null=True, blank=True,related_name='orcamento_criado') 
+    custo = models.DecimalField(max_digits=8,decimal_places=2,null=True,blank=True,)
     def calcular_total(self):
         return sum(procedimento.valor_procedimento for procedimento in self.procedimento.all())
     
