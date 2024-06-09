@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'apps.OrcamentoPaciente',
     'apps.CadastroUsuario',
     'apps.CadastroProprietario',
+    'apps.Orcamentos',
 ]
 
 MIDDLEWARE = [

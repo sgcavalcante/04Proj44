@@ -25,5 +25,5 @@ urlpatterns = [
     path('',include('apps.CadastroUsuario.urls')),
     path('',include('apps.CadastroProprietario.urls')),
     path('',include('apps.OrcamentoPaciente.urls')),
-    
+    path('',include('apps.Orcamentos.urls')),
 ]

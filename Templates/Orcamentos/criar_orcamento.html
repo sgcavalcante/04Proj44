@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block conteudo %}
+ 
+    <title>Criar Orçamento</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Criar Orçamento</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ orcamento_form.as_p }}
+        <table>
+            <thead>
+                <tr>
+                    <th>Dente</th>
+                    <th>Procedimentos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for field in procedimento_form %}
+                    {% if field.name|slice:":6" == "dente_" %}
+                        <tr>
+                            <td>{{ field.label }}</td>
+                            <td>{{ field }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Gerar Orçamento</button>
+    </form>
+</body>
+</html>
+{% endblock conteudo %}

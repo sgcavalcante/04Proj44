@@ -1,0 +1,25 @@
+<!-- orcamentos/templates/orcamentos/relatorio_geral.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Relatório Geral</title>
+</head>
+<body>
+    <h1>Relatório Geral de Pacientes e Orçamentos</h1>
+    {% for paciente in pacientes %}
+    <h2>{{ paciente.nome }}</h2>
+    <ul>
+        {% for orcamento in paciente.orcamento_set.all %}
+        <li class="table table-striped table-hover ">
+            Orçamento {{ orcamento.numero }} - Data: {{ orcamento.data_criacao }}
+            <ul>
+                {% for item in orcamento.itemorcamento_set.all %}
+                <li>{{ item.dente.numero }} - {{ item.procedimento.nome }} - Preço: {{ item.preco }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!-- orcamentos/templates/orcamentos/orcamento_pdf.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orçamento PDF</title>
+</head>
+<body>
+    <h1>Orçamento para {{ orcamento.paciente.nome }}</h1>
+    <p>Data: {{ orcamento.data_criacao }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Dente</th>
+                <th>Procedimentos</th>
+                <th>Preço</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in itens %}
+            <tr>
+                <td>{{ item.dente.numero }}</td>
+                <td>{{ item.procedimento.nome }}</td>
+                <td>{{ item.preco }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>Total: {{ total }}</p>
+    <img src="{{ qr_code }}" alt="QR Code de Pagamento">
+</body>
+</html>

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block conteudo %}
+ 
+    <title>Relatório de Orçamento</title>
+</head>
+<body>
+    <h1>Relatório de Orçamento</h1>
+    <p>Orçamento Número: {{ orcamento.numero }}</p>
+    <p>Data de Criação: {{ orcamento.data_criacao }}</p>
+    <p>Paciente: {{ orcamento.paciente.nome }}</p>
+
+    <h2>Itens do Orçamento</h2>
+    <ul >
+        Dente
+        Procedimento
+        Preço
+        {% for item in itens_orcamento %}
+             
+            <li class="table table-striped table-hover ">
+                Dente: {{ item.dente.numero }} - {{ item.dente.descricao }} 
+                Procedimento: {{ item.procedimento.nome }} 
+                Preço: R$ {{ item.preco }}
+            </li>
+        {% endfor %}
+    </ul>
+    <h3>Total: R$ {{ total }}</h3>
+</body>
+</html>
+{% endblock conteudo %}
