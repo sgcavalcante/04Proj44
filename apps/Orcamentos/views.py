@@ -4,17 +4,23 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from .models import Paciente, Dente, Procedimento, Orcamento, ItemOrcamento
 from .forms import OrcamentoForm,ProcedimentoForm
+from apps.CadastroUsuario.models import CadastroPacientes
 import pdfkit
 import qrcode
 
 
-def criar_orcamento(request):
+def criar_orcamento(request,id):
+    #id = id
+    pacientes = get_object_or_404(CadastroPacientes,id = id)
+    paciente_id = id
+    print(id,pacientes)  
     if request.method == 'POST':
         orcamento_form = OrcamentoForm(request.POST)
         procedimento_form = ProcedimentoForm(request.POST)
         if orcamento_form.is_valid() and procedimento_form.is_valid():
-            paciente = orcamento_form.cleaned_data['paciente']
-            orcamento = Orcamento.objects.create(paciente=paciente)
+            #paciente = orcamento_form.cleaned_data['paciente']
+            
+            orcamento = Orcamento.objects.create(paciente_id=paciente_id)
             for dente in Dente.objects.all():
                 procedimentos_ids = procedimento_form.cleaned_data.get(f'dente_{dente.id}', [])
                 for procedimento_id in procedimentos_ids:
@@ -29,9 +35,11 @@ def criar_orcamento(request):
     else:
         orcamento_form = OrcamentoForm()
         procedimento_form = ProcedimentoForm()
-    return render(request, 'Orcamentos/criar_orcamento.html', {
-        'orcamento_form': orcamento_form,
-        'procedimento_form': procedimento_form
+    return render(request, 'Orcamentos/criar_orcamento.html', {  
+        'orcamento_form': orcamento_form,       
+        'procedimento_form': procedimento_form,
+        'pacientes':pacientes,
+         
     })
 
 def gerar_html(request, orcamento_id):
@@ -50,8 +58,12 @@ def gerar_html(request, orcamento_id):
 
 
 def relatorio_geral(request):
-    pacientes = Paciente.objects.all()
+    pacientes = CadastroPacientes.objects.all()
     return render(request, 'Orcamentos/relatorio_geral.html', {'pacientes': pacientes})
+
+def todosospacientes(request):
+    pacientes = CadastroPacientes.objects.all()
+    return render(request, 'Orcamentos/todosospacientes.html', {'pacientes': pacientes})
 
 # views.py
  

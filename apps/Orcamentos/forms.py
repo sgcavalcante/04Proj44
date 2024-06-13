@@ -1,9 +1,9 @@
 from django import forms
 from .models import Paciente, Dente, Procedimento
-
+from apps.CadastroUsuario.models import CadastroPacientes
 class OrcamentoForm(forms.Form):
-    paciente = forms.ModelChoiceField(queryset=Paciente.objects.all(), label="Paciente")
-
+    pacientes = forms.ModelChoiceField(queryset=CadastroPacientes.objects.all(),required=False)
+    #pacientes = forms.Field(required=False)
 class ProcedimentoForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ProcedimentoForm, self).__init__(*args, **kwargs)

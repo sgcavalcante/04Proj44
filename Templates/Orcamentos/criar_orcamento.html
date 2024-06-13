@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block conteudo %}
- 
+<!DOCTYPE html>
+<html>
+<head>
     <title>Criar Orçamento</title>
     <style>
         table {
@@ -18,9 +20,12 @@
 </head>
 <body>
     <h1>Criar Orçamento</h1>
+    <div>
+        {{ pacientes }} <br>
+    </div>
     <form method="post">
         {% csrf_token %}
-        {{ orcamento_form.as_p }}
+         
         <table>
             <thead>
                 <tr>
