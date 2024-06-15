@@ -11,13 +11,50 @@
             
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Adicionar Dente</button>
+                 
+              
+                 
+              
               </form>
               <a href="{% url 'configuracao' %}">Voltar para Configuração</a>
             
               
-              <hr>    
+              <hr>  
+              <br>
+
+
+                    
+                   
+                  <br>
+                  <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.numero.label_tag }}
+                        {{ form.numero }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.descricao.label_tag }}
+                        {{ form.descricao }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.imagem.label_tag }}
+                        {{ form.imagem }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </form>
+            
+                <script>
+                    document.getElementById('{{ form.imagem.id_for_label }}').addEventListener('change', function() {
+                        const fileInput = this;
+                        const descricaoInput = document.getElementById('{{ form.descricao.id_for_label }}');
+                        const file = fileInput.files[0];
+                        if (file) {
+                            descricaoInput.value = file.name;
+                        }
+                    });
+                </script>
+   
+
 
               <table border = 1 class="table table-striped table-hover ">
 
