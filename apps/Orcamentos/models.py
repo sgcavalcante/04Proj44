@@ -4,20 +4,25 @@ from django.db import models
 from apps.CadastroUsuario.models import CadastroPacientes
 import uuid
 
-class Paciente(models.Model):
-    nome = models.CharField(max_length=100)
-    cpf = models.CharField(max_length=11, unique=True)
+#class Paciente(models.Model):
+    #nome = models.CharField(max_length=100)
+    #cpf = models.CharField(max_length=11, unique=True)
 
-    def __str__(self):
-        return self.nome
+    #def __str__(self):
+        #return self.nome
 
 class Dente(models.Model):
-    numero = models.IntegerField(unique=True)
+    numero = models.IntegerField(unique=True,)
     descricao = models.CharField(max_length=100)
-    imagem = models.ImageField(upload_to='dentes/')
+    imagem = models.ImageField(upload_to='Odontograma/')
 
     def __str__(self):
         return f"Dente {self.numero} - {self.descricao}"
+    
+
+    
+
+   
 
 class Procedimento(models.Model):
     nome = models.CharField(max_length=100)

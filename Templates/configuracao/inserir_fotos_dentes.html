@@ -28,13 +28,13 @@
                             <th>Imagem</th>
                              
                               
-                            {% for fotos_dentes in fotos_dentes %}   
+                            {% for fotos in fotos_dentes %}   
                             <tr>
                                  
-                                <td>{{ fotos_dentes.nome_dente}}</td>
+                                <td>{{ fotos.descricao}}</td>
                                  
                                  
-                                <td><img style="max-width: 100px;" src= {{fotos_dentes.imagem_dente.url}} ></td>
+                                <td><img style="max-width: 100px;" src= {{fotos.imagem.url}} ></td>
                                   
                             </tr>
                             {% endfor %}    

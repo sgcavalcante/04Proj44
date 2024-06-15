@@ -2,8 +2,8 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from .models import Paciente, Dente, Procedimento, Orcamento, ItemOrcamento
-from .forms import OrcamentoForm,ProcedimentoForm
+from .models import Dente, Procedimento, Orcamento, ItemOrcamento
+from .forms import OrcamentoForm,ProcedimentoForm,DenteForm
 from apps.CadastroUsuario.models import CadastroPacientes
 import pdfkit
 import qrcode
@@ -92,3 +92,25 @@ def gerar_html(request, orcamento_id):
 def alista_orcamentos(request):
     orcamentos = Orcamento.objects.all()
     return render(request, 'Orcamentos/alista_orcamentos.html', {'orcamentos': orcamentos})
+
+
+def inserir_fotos_dentes(request):
+    fotos_dentes = Dente.objects.all() # apenas para pegar a models Dentes e mostrar no template de inserir fotos de dentes
+    if request.method == 'POST':
+        form = DenteForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('inserir_fotos_dentes')  # Redirecionar para a lista de dentes após o upload
+    else:
+        form = DenteForm()
+
+    return render(request, 'configuracao/inserir_fotos_dentes.html', {'form': form,'fotos_dentes':fotos_dentes})
+'''
+def orcamento(request, paciente_id):
+    paciente = CadastroPacientes.objects.get(id=paciente_id)
+    informacao = request.session.get('cont', '')  
+    dentes_fotos = Dente.objects.all()
+    procedimentos = Procedimento.objects.all()
+     
+    return render(request, 'orcamento/orcamento.html',{'paciente':paciente,'procedimentos':procedimentos,'dentes_fotos':dentes_fotos,'informacao':informacao})
+'''

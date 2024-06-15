@@ -1,5 +1,5 @@
 from django import forms
-from .models import Paciente, Dente, Procedimento
+from .models import Dente, Procedimento #Paciente, 
 from apps.CadastroUsuario.models import CadastroPacientes
 class OrcamentoForm(forms.Form):
     pacientes = forms.ModelChoiceField(queryset=CadastroPacientes.objects.all(),required=False)
@@ -14,3 +14,9 @@ class ProcedimentoForm(forms.Form):
                 label=f'Dente {dente.numero} - {dente.descricao}',
                 required=False
             )
+
+
+class DenteForm(forms.ModelForm):
+    class Meta:
+        model = Dente
+        fields = ['numero','descricao', 'imagem']
