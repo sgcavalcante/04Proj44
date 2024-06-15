@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.OrcamentoPaciente',
+    #'apps.OrcamentoPaciente',
     'apps.CadastroUsuario',
     'apps.CadastroProprietario',
     'apps.Orcamentos',

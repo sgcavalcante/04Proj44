@@ -1,6 +1,7 @@
 # Create your models here.
 # orcamentos/models.py
 from django.db import models
+from apps.CadastroUsuario.models import CadastroPacientes
 import uuid
 
 class Paciente(models.Model):
@@ -27,7 +28,7 @@ class Procedimento(models.Model):
 
 class Orcamento(models.Model):
     numero = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    paciente = models.ForeignKey(CadastroPacientes, on_delete=models.CASCADE)
     data_criacao = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
