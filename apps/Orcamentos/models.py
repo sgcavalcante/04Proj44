@@ -12,7 +12,7 @@ import uuid
         #return self.nome
 
 class Dente(models.Model):
-    numero = models.IntegerField(unique=True,blank=True,)
+    numero = models.IntegerField(blank=True,null=True)
     descricao = models.CharField(max_length=100)
     imagem = models.ImageField(upload_to='Odontograma/')
 
