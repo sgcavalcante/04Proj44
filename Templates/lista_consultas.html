@@ -1,0 +1,6 @@
+<h1>Minhas Consultas</h1>
+<ul>
+    {% for consulta in consultas %}
+        <li>{{ consulta.data_horario }} - {{ consulta.descricao }}</li>
+    {% endfor %}
+</ul>

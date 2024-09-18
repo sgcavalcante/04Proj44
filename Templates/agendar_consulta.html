@@ -1,0 +1,9 @@
+<h1>Agendar Consulta para {{ Pacientes.nome }} {{ Pacientes.id }}</h1> 
+
+<form method="post">
+    {% csrf_token %}
+     
+    {{ form.data_horario }}
+    {{ form.descricao }}
+    <button type="submit" class="btn btn-primary">Agendar Consulta</button>
+</form>

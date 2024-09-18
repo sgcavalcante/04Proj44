@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'apps.CadastroUsuario',
     'apps.CadastroProprietario',
     'apps.Orcamentos',
+    'apps.consultas',
 ]
 
 MIDDLEWARE = [

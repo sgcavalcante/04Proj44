@@ -19,11 +19,12 @@ from django.urls import path,include
 #from apps.OrcamentoPaciente import urls
 from apps.CadastroUsuario import urls
 from apps.CadastroProprietario import urls
-
+from apps.consultas import urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('apps.CadastroUsuario.urls')),
     path('',include('apps.CadastroProprietario.urls')),
     #path('',include('apps.OrcamentoPaciente.urls')),
     path('',include('apps.Orcamentos.urls')),
+    path('',include('apps.consultas.urls')),
 ]
