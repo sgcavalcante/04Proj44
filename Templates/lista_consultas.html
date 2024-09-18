@@ -1,6 +1,45 @@
-<h1>Minhas Consultas</h1>
-<ul>
-    {% for consulta in consultas %}
-        <li>{{ consulta.paciente }} {{ consulta.data_horario }} - {{ consulta.descricao }}</li>
-    {% endfor %}
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário de Consultas</title>
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css" rel="stylesheet">
+
+    <!-- FullCalendar JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',  // Exibe o mês
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'  // Tipos de exibição
+                },
+                events: '/eventos/',  // URL para buscar os eventos
+                eventClick: function (info) {
+                    alert(info.event.title + '\\n' + info.event.extendedProps.description);  // Exibe detalhes ao clicar
+                }
+            });
+
+            calendar.render();  // Renderiza o calendário
+        });
+    </script>
+</head>
+<body>
+    <h1>Calendário de Consultas</h1>
+    <div id="calendar"></div>  <!-- Elemento onde o FullCalendar será renderizado -->
+
+    <style>
+        #calendar {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+    </style>
+</body>
+</html>
