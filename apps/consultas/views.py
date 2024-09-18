@@ -20,7 +20,7 @@ def agendar_consulta(request, paciente_id):
     else:
         form = ConsultaForm()
 
-    return render(request, 'agendar_consulta.html', {'form': form, 'Pacientes': paciente})
+    return render(request, 'agendar_consulta.html', {'form': form, 'paciente': paciente})
 
 
 @login_required

@@ -4,7 +4,7 @@ from .models import Consulta, CadastroPacientes  # Importe o modelo CadastroPaci
 class ConsultaForm(forms.ModelForm):
     class Meta:
         model = Consulta
-        fields = ['paciente', 'data_horario', 'descricao']  # Inclua paciente aqui
+        fields = ['data_horario', 'descricao']  # Inclua paciente aqui
         widgets = {
             'data_horario': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'descricao': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
