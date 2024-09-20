@@ -1,15 +1,20 @@
 from django import forms
-from .models import Consulta, CadastroPacientes  # Importe o modelo CadastroPacientes
+from .models import Consulta
 
 class ConsultaForm(forms.ModelForm):
     class Meta:
         model = Consulta
-        fields = ['data_horario', 'descricao']  # Inclua paciente aqui
+        fields = ['data_horario', 'descricao']
         widgets = {
             'data_horario': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'descricao': forms.Textarea(attrs={'rows': 4, 'cols': 15}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super(ConsultaForm, self).__init__(*args, **kwargs)
-        #self.fields['paciente'].queryset = CadastroPacientes.objects.all()  # Listar os pacientes cadastrados
+    def clean_data_horario(self):
+        data_horario = self.cleaned_data['data_horario']
+
+        # Verifica se já existe uma consulta no mesmo horário
+        if Consulta.objects.filter(data_horario=data_horario).exists():
+            raise forms.ValidationError('Já existe uma consulta marcada para esse horário.')
+
+        return data_horario

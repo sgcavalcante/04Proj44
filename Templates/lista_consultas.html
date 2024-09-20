@@ -1,9 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
+{% block conteudo %}
     <title>Calendário de Consultas</title>
+    <div style="text-align: center; margin-top: 10px"></div>
+        <div class="bg-body-tertiary  form-control" style="width:100%";>
+    <div style="margin-bottom: 25px">
+        <a href="{% url 'configuracao' %}" class=" form-control  btn btn-lg btn-success" for="">Configurações</a>
+    </div>
+</div>
+</div>
+
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css" rel="stylesheet">
 
@@ -43,3 +48,4 @@
     </style>
 </body>
 </html>
+{% endblock conteudo %} 
