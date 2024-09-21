@@ -1,9 +1,83 @@
-<h1>Agendar Consulta para {{ Pacientes.nome }} {{ Pacientes.id }}</h1> 
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/pt-br.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Adiciona jQuery para facilitar o AJAX -->
+</head>
+<body>
+    <h1>Agendar Consulta para o Paciente {{ paciente.nome }}</h1>
 
-<form method="post">
-    {% csrf_token %}
-     
-    {{ form.data_horario }}
-    {{ form.descricao }}
-    <button type="submit" class="btn btn-primary">Agendar Consulta</button>
-</form>
+    <!-- Formulário para agendar a consulta (oculto) -->
+    <form method="post" id="agendar-consulta-form">
+        {% csrf_token %}
+        <input type="hidden" id="id_data_horario" name="data_horario">  <!-- Campo oculto para a data/hora selecionada -->
+        <input type="hidden" id="id_descricao" name="descricao" value="Consulta automática"> <!-- Descrição fixa para o exemplo -->
+    </form>
+
+    <div id="calendar"></div>  <!-- Elemento onde o FullCalendar será renderizado -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var form = document.getElementById("agendar-consulta-form");
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',  // Visualização semanal com horas
+                locale: 'pt-br',
+                events: '/eventos_consultas/',  // Carrega as consultas já agendadas
+                selectable: true,  // Permite a seleção de horários
+                editable: false,  // Desabilita a edição de eventos
+                slotDuration: '01:00:00',  // Intervalos de 1 hora com minutos fixos em zero
+                slotLabelFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: false,
+                    hour12: false
+                },
+                selectOverlap: function(event) {
+                    return false;  // Impede a seleção de horários sobrepostos a eventos existentes
+                },
+                select: function(info) {
+                    // Formata a data/hora com minutos "00"
+                    let dataHora = new Date(info.start);
+                    dataHora.setMinutes(0);  // Define os minutos como 00
+
+                    // Preenche o campo oculto no formulário com a data/hora
+                    document.getElementById("id_data_horario").value = dataHora.toISOString();
+
+                    // Envia o formulário via AJAX
+                    $.ajax({
+                        url: "{% url 'agendar_consulta' paciente.id %}",
+                        type: "POST",
+                        data: $(form).serialize(),  // Serializa o formulário para envio
+                        success: function(response) {
+                            alert("Consulta agendada com sucesso!");
+                            calendar.refetchEvents();  // Atualiza o calendário para exibir a nova consulta
+                        },
+                        error: function(error) {
+                            alert("Erro ao agendar a consulta.");
+                        }
+                    });
+                },
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                allDaySlot: false  // Remove o slot de dia inteiro
+            });
+
+            calendar.render();
+        });
+    </script>
+
+    <style>
+        #calendar {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+    </style>
+</body>
+</html>
