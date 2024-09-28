@@ -11,12 +11,16 @@ from django.http import JsonResponse
 @login_required
 
 def agendar_consulta(request, paciente_id):
-    paciente = get_object_or_404(CadastroPacientes, id=paciente_id)
+    # Tenta buscar o paciente relacionado ao doutor (usuário autenticado)
+    doutor = request.user
+    
+    # Filtra os pacientes cadastrados pelo doutor logado
+    paciente = get_object_or_404(CadastroPacientes, id=paciente_id, usuario=doutor)
 
     # Tratamento do método GET para renderizar o formulário
     if request.method == 'GET':
         form = ConsultaForm()
-        return render(request, 'agendar_consulta.html', {'form': form, 'paciente': paciente})
+        return render(request, 'consulta/agendar_consulta.html', {'form': form, 'paciente': paciente, 'doutor': doutor})
 
     # Lida com o envio do formulário via POST
     if request.method == 'POST':
@@ -49,25 +53,30 @@ def agendar_consulta(request, paciente_id):
                 return JsonResponse({'message': 'Consulta agendada com sucesso!'}, status=200)
 
     return JsonResponse({'error': 'Método inválido'}, status=405)
-'''
-@login_required
-def consultas(request):
-    consultas = Consulta.objects.filter()
-    return render(request, 'lista_consultas.html', {'consultas': consultas})
 
-'''
 
  
 
 @login_required
 def calendario_consultas(request):
-    return render(request, 'lista_consultas.html')  # Template com o calendário
+    #pacientes = CadastroPacientes.objects.filter(usuario=request.user) 
+    usuario=request.user
+    print(usuario)
+    return render(request, 'consulta/lista_consultas.html',{'doutor':usuario})  # Template com o calendário
 
 @login_required
 def eventos_consultas(request):
-    consultas = Consulta.objects.all()  # Busca todas as consultas agendadas
-    eventos = []
+# Obtém o doutor (usuário logado)
+    doutor = request.user
 
+    # Filtra os pacientes cadastrados pelo doutor logado
+    pacientes = CadastroPacientes.objects.filter(usuario=doutor)
+
+    # Filtra as consultas apenas dos pacientes cadastrados pelo doutor logado
+    consultas = Consulta.objects.filter(paciente__in=pacientes)
+
+    # Prepara os eventos para o FullCalendar
+    eventos = []
     for consulta in consultas:
         eventos.append({
             'title': f'Consulta: {consulta.paciente.nome}',

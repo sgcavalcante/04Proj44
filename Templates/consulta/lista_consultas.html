@@ -4,24 +4,15 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/pt-br.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Adiciona jQuery para facilitar o AJAX -->
 </head>
 <body>
-    <h1>Agendar Consulta para o Paciente {{ paciente.nome }}</h1>
-
-    <!-- Formulário para agendar a consulta (oculto) -->
-    <form method="post" id="agendar-consulta-form">
-        {% csrf_token %}
-        <input type="hidden" id="id_data_horario" name="data_horario">  <!-- Campo oculto para a data/hora selecionada -->
-        <input type="hidden" id="id_descricao" name="descricao" value="Consulta automática"> <!-- Descrição fixa para o exemplo -->
-    </form>
-
+    <h1>Consultas para:  {{ doutor }}</h1>
     <div id="calendar"></div>  <!-- Elemento onde o FullCalendar será renderizado -->
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
-            var form = document.getElementById("agendar-consulta-form");
+            var pacienteId = "{{ paciente.id }}";  // Captura o ID do paciente
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',  // Visualização semanal com horas
@@ -44,22 +35,8 @@
                     let dataHora = new Date(info.start);
                     dataHora.setMinutes(0);  // Define os minutos como 00
 
-                    // Preenche o campo oculto no formulário com a data/hora
-                    document.getElementById("id_data_horario").value = dataHora.toISOString();
-
-                    // Envia o formulário via AJAX
-                    $.ajax({
-                        url: "{% url 'agendar_consulta' paciente.id %}",
-                        type: "POST",
-                        data: $(form).serialize(),  // Serializa o formulário para envio
-                        success: function(response) {
-                            alert("Consulta agendada com sucesso!");
-                            calendar.refetchEvents();  // Atualiza o calendário para exibir a nova consulta
-                        },
-                        error: function(error) {
-                            alert("Erro ao agendar a consulta.");
-                        }
-                    });
+                    // Redireciona para a página de agendamento com a data/hora e o ID do paciente
+                    window.location.href = `/agendar_consulta/${pacienteId}?data=${dataHora.toISOString()}`;
                 },
                 headerToolbar: {
                     left: 'prev,next today',
@@ -79,5 +56,6 @@
             margin: 0 auto;
         }
     </style>
+     {% include 'footer.html' %}
 </body>
 </html>
