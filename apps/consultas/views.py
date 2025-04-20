@@ -7,6 +7,9 @@ from .forms import ConsultaForm
 from datetime import datetime,timedelta
 from django.http import JsonResponse
  
+from django.utils.dateparse import parse_datetime        # <-- aqui
+from .models import Consulta, CadastroPacientes
+ 
 
 @login_required
 def agendar_consulta(request, paciente_id):
@@ -86,30 +89,72 @@ def calendario_consultas(request):
 
 @login_required
 def eventos_consultas(request):
-    """
-    Retorna lista de consultas do médico autenticado no formato JSON para o FullCalendar.
-    Cada evento inclui título, início, término e cores.
-    """
-    doutor = request.user
-    pacientes = CadastroPacientes.objects.filter(usuario=doutor)
-    consultas = Consulta.objects.filter(paciente__in=pacientes)
+    user = request.user
+
+    # parse dos parâmetros enviados
+    start_dt = parse_datetime(request.GET.get('start'))
+    end_dt   = parse_datetime(request.GET.get('end'))
+    if not start_dt or not end_dt:
+        return JsonResponse({'error': 'Parâmetros inválidos'}, status=400)
+
+    # todos os pacientes e consultas do dentista no intervalo
+    pacientes = CadastroPacientes.objects.filter(usuario=user)
+    consultas = Consulta.objects.filter(
+        paciente__in=pacientes,
+        data_horario__lt=end_dt,
+        data_horario_end__gt=start_dt
+    )
 
     eventos = []
-    for consulta in consultas:
-        start = consulta.data_horario
-        # Usa data_horario_end salvo; se for None, assume 1h de duração
-        if consulta.data_horario_end:
-            end = consulta.data_horario_end
-        else:
-            end = start + timedelta(hours=1)
 
+    # 1) Eventos já agendados (Consultas) — serão blocos “sólidos”
+    for c in consultas:
         eventos.append({
-            'title': f'Consulta: {consulta.paciente.nome}',
-            'start': start.isoformat(),
-            'end':   end.isoformat(),
-            'description': consulta.descricao,
-            'backgroundColor': '#ff0000',
-            'borderColor': '#ff0000',
+            'id':           c.id,
+            'title':        f'Consulta: {c.paciente.nome}',
+            'start':        c.data_horario.isoformat(),
+            'end':          c.data_horario_end.isoformat(),
+            'backgroundColor': '#dc3545',
+            'borderColor':     '#dc3545',
+            'extendedProps': {
+                'type': 'booked'
+            }
         })
+
+    # 2) Slots livres como eventos “clicáveis”
+    work_start_hour = 8
+    work_end_hour   = 18
+    dia = start_dt.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    while dia < end_dt:
+        for hora in range(work_start_hour, work_end_hour):
+            slot_start = dia.replace(hour=hora)
+            slot_end   = slot_start + timedelta(hours=1)
+
+            # só se estiver dentro do intervalo pedido
+            if slot_start < start_dt or slot_end > end_dt:
+                continue
+
+            # verifica se já existe consulta nesse slot
+            ocupado = consultas.filter(
+                data_horario__lt=slot_end,
+                data_horario_end__gt=slot_start
+            ).exists()
+
+            if not ocupado:
+                eventos.append({
+                    'title':      'Livre',
+                    'start':      slot_start.isoformat(),
+                    'end':        slot_end.isoformat(),
+                    # vamos deixá‑los “visíveis” mas com outra cor
+                    'backgroundColor': '#198754',
+                    'borderColor':     '#198754',
+                    'textColor':       '#ffffff',
+                    'extendedProps': {
+                        'type': 'free'
+                    }
+                })
+
+        dia += timedelta(days=1)
 
     return JsonResponse(eventos, safe=False)

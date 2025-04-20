@@ -34,52 +34,61 @@ function formatLocal(date) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  const calendarEl = document.getElementById('calendar');
-  const $form = $('#agendar-consulta-form');
+  var calendarEl = document.getElementById('calendar');
+  var $form     = $('#agendar-consulta-form');
 
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'timeGridWeek',
-    locale: 'pt-br',
-    events: '/eventos_consultas/',
-    selectable: true,
-    allDaySlot: false,
-    slotDuration: '01:00:00',
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView:     'timeGridWeek',
+    locale:          'pt-br',
+    slotDuration:    '01:00:00',
+    selectable:      false,  // não precisamos mais de select
     headerToolbar: {
-      left: 'prev,next today',
+      left:   'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      right:  'dayGridMonth,timeGridWeek,timeGridDay'
     },
+    events: '/eventos_consultas/',
 
-    dateClick: function(info) {
-      // pega o instante clicado em local
-      let start = new Date(info.date);
-      start.setMinutes(0,0,0);
-      // fim = +1h
-      let end = new Date(start.getTime() + 60*60*1000);
+    // captura clique em evento
+    eventClick: function(info) {
+      // só agendar se for um slot livre
+      if (info.event.extendedProps.type === 'free') {
+        // evita ação padrão
+        info.jsEvent.preventDefault();
 
-      // preenche os hidden com LOCAL ISO
-      $('#id_data_horario').val( formatLocal(start) );
-      $('#id_data_horario_end').val(   formatLocal(end) );
-      $('#id_descricao').val('Consulta automática');
-
-      // envia
-      $.ajax({
-        url: "{% url 'agendar_consulta' paciente.id %}",
-        type: "POST",
-        data: $form.serialize(),
-        success: function() {
-          calendar.refetchEvents();
-          alert('Consulta marcada!');
-        },
-        error: function(xhr) {
-          alert('Erro: '+xhr.responseJSON.error);
+        // preenche o form
+        var start = info.event.start;
+        var end   = info.event.end;
+        function fmt(d) {
+          const pad = n=>String(n).padStart(2,'0');
+          return d.getFullYear() + '-'
+               + pad(d.getMonth()+1) + '-'
+               + pad(d.getDate()) + 'T'
+               + pad(d.getHours()) + ':'
+               + pad(d.getMinutes()) + ':00';
         }
-      });
+        $('#id_data_horario').val( fmt(start) );
+        $('#id_data_horario_end').val(   fmt(end) );
+        $('#id_descricao').val('Consulta automática');
+
+        // envia AJAX
+        $.ajax({
+          url:   "{% url 'agendar_consulta' paciente.id %}",
+          type:  "POST",
+          data:  $form.serialize(),
+          success: function() {
+            alert('Consulta agendada!');
+            calendar.refetchEvents();
+          },
+          error: function(xhr) {
+            alert('Erro: ' + xhr.responseJSON.error);
+          }
+        });
+      }
     }
   });
 
   calendar.render();
 });
-
     </script>
 {% endblock conteudo %}
