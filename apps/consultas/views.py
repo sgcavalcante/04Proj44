@@ -9,50 +9,70 @@ from django.http import JsonResponse
  
 
 @login_required
-
 def agendar_consulta(request, paciente_id):
-    # Tenta buscar o paciente relacionado ao doutor (usuário autenticado)
     doutor = request.user
-    
-    # Filtra os pacientes cadastrados pelo doutor logado
     paciente = get_object_or_404(CadastroPacientes, id=paciente_id, usuario=doutor)
 
-    # Tratamento do método GET para renderizar o formulário
+    # GET → exibe a página com o FullCalendar
     if request.method == 'GET':
-        form = ConsultaForm()
-        return render(request, 'consulta/agendar_consulta.html', {'form': form, 'paciente': paciente, 'doutor': doutor})
+        return render(request, 'consulta/agendar_consulta.html', {
+            'paciente': paciente,
+            'doutor': doutor
+        })
 
-    # Lida com o envio do formulário via POST
+    # POST → recebimento via AJAX
     if request.method == 'POST':
-        data_horario = request.POST.get('data_horario')
-        descricao = request.POST.get('descricao')
+        ds = request.POST.get('data_horario')
+        de = request.POST.get('data_horario_end')
+        desc = request.POST.get('descricao')
 
-        if data_horario:
-            try:
-                data_horario = datetime.strptime(data_horario, '%Y-%m-%dT%H:%M:%S.%fZ')
-            except ValueError:
-                data_horario = datetime.strptime(data_horario, '%Y-%m-%dT%H:%M:%S')
-            data_horario = data_horario.replace(minute=0)
+        # valida campos
+        if not ds or not de or not desc:
+            return JsonResponse({
+                'error': 'Campos data_horario, data_horario_end e descricao são obrigatórios.'
+            }, status=400)
 
-        if not data_horario:
-            return JsonResponse({'error': 'Data e hora não foram fornecidas.'}, status=400)
+        # parsing robusto
+        def _parse(dt_str):
+            for fmt in ('%Y-%m-%dT%H:%M:%S.%fZ','%Y-%m-%dT%H:%M:%S'):
+                try:
+                    return datetime.strptime(dt_str, fmt)
+                except ValueError:
+                    continue
+            return None
 
-        # Preenche o formulário com os dados recebidos via POST
-        form = ConsultaForm({'descricao': descricao})
+        start = _parse(ds)
+        end   = _parse(de)
+        if not start or not end:
+            return JsonResponse({'error': 'Formato de data inválido.'}, status=400)
 
-        if form.is_valid():
-            consulta = form.save(commit=False)
-            consulta.paciente = paciente
-            consulta.data_horario = data_horario
+        # zera minutos/segundos e garante +1h mínimo
+        start = start.replace(minute=0, second=0, microsecond=0)
+        if end <= start:
+            end = start + timedelta(hours=1)
 
-            # Verifica se já existe uma consulta marcada no mesmo horário
-            if Consulta.objects.filter(data_horario=consulta.data_horario).exists():
-                return JsonResponse({'error': 'Já existe uma consulta marcada para este horário.'}, status=400)
-            else:
-                consulta.save()
-                return JsonResponse({'message': 'Consulta agendada com sucesso!'}, status=200)
+        # checa conflito de intervalo para este doutor
+        conflict = Consulta.objects.filter(
+            paciente__usuario=doutor,
+            data_horario__lt=end,
+            data_horario_end__gt=start
+        ).exists()
+        if conflict:
+            return JsonResponse({'error': 'Já existe uma consulta nesse intervalo.'}, status=400)
 
-    return JsonResponse({'error': 'Método inválido'}, status=405)
+        # salva
+        Consulta.objects.create(
+            paciente=paciente,
+            descricao=desc,
+            data_horario=start,
+            data_horario_end=end
+        )
+        return JsonResponse({'message': 'Consulta agendada com sucesso!'}, status=200)
+
+    # outros métodos não permitidos
+    return HttpResponseNotAllowed(['GET','POST'])
+
+
 
 
  
@@ -66,24 +86,29 @@ def calendario_consultas(request):
 
 @login_required
 def eventos_consultas(request):
-# Obtém o doutor (usuário logado)
+    """
+    Retorna lista de consultas do médico autenticado no formato JSON para o FullCalendar.
+    Cada evento inclui título, início, término e cores.
+    """
     doutor = request.user
-
-    # Filtra os pacientes cadastrados pelo doutor logado
     pacientes = CadastroPacientes.objects.filter(usuario=doutor)
-
-    # Filtra as consultas apenas dos pacientes cadastrados pelo doutor logado
     consultas = Consulta.objects.filter(paciente__in=pacientes)
 
-    # Prepara os eventos para o FullCalendar
     eventos = []
     for consulta in consultas:
+        start = consulta.data_horario
+        # Usa data_horario_end salvo; se for None, assume 1h de duração
+        if consulta.data_horario_end:
+            end = consulta.data_horario_end
+        else:
+            end = start + timedelta(hours=1)
+
         eventos.append({
             'title': f'Consulta: {consulta.paciente.nome}',
-            'start': consulta.data_horario.isoformat(),
-            'end': (consulta.data_horario + timedelta(hours=1)).isoformat(),  # Define a duração de 1h
+            'start': start.isoformat(),
+            'end':   end.isoformat(),
             'description': consulta.descricao,
-            'backgroundColor': '#ff0000',  # Cor do evento
+            'backgroundColor': '#ff0000',
             'borderColor': '#ff0000',
         })
 

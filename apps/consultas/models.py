@@ -5,6 +5,7 @@ from apps.CadastroUsuario.models import CadastroPacientes  # Importe seu modelo 
 class Consulta(models.Model):
     paciente = models.ForeignKey(CadastroPacientes, on_delete=models.CASCADE)  # Use CadastroPacientes
     data_horario = models.DateTimeField()
+    data_horario_end = models.DateTimeField(null=True, blank=True)
     descricao = models.CharField(max_length=255)
 
     def __str__(self):

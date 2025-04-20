@@ -1,14 +1,20 @@
+
+
 from django import forms
 from .models import Consulta
 
 class ConsultaForm(forms.ModelForm):
+    # campo adicional para horário de término
+    data_horario_end = forms.DateTimeField(widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = Consulta
-        fields = ['descricao']  # O campo 'data_horario' será preenchido na view
+        fields = [
+            'descricao',
+            'data_horario',
+            'data_horario_end',   # passa a aceitar o fim também
+        ]
         widgets = {
-            'descricao': forms.Textarea(attrs={'rows': 3}),
+            'data_horario': forms.HiddenInput(),
         }
-    
-
-
     
