@@ -6,12 +6,13 @@
 
   <div class="content-container">
     <h1 class="mb-4">Agendar Consulta para {{ paciente.nome }}</h1>
+
     <!-- Formulário oculto -->
     <form method="post" id="agendar-consulta-form" class="d-none">
       {% csrf_token %}
-      <input type="hidden" id="id_data_horario" name="data_horario">
+      <input type="hidden" id="id_data_horario"     name="data_horario">
       <input type="hidden" id="id_data_horario_end" name="data_horario_end">
-      <input type="hidden" id="id_descricao" name="descricao" value="Consulta automática">
+      <input type="hidden" id="id_descricao"        name="descricao" value="Consulta automática">
     </form>
 
     <!-- Calendário -->
@@ -23,72 +24,117 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/pt-br.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    // helper para montar a string ISO local (sem Z nem offset)
-function formatLocal(date) {
-  const pad = n => String(n).padStart(2,'0');
-  return date.getFullYear() + '-'
-       + pad(date.getMonth()+1) + '-'
-       + pad(date.getDate()) + 'T'
-       + pad(date.getHours()) + ':'
-       + pad(date.getMinutes()) + ':00';
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  var calendarEl = document.getElementById('calendar');
-  var $form     = $('#agendar-consulta-form');
-
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView:     'timeGridWeek',
-    locale:          'pt-br',
-    slotDuration:    '01:00:00',
-    selectable:      false,  // não precisamos mais de select
-    headerToolbar: {
-      left:   'prev,next today',
-      center: 'title',
-      right:  'dayGridMonth,timeGridWeek,timeGridDay'
-    },
-    events: '/eventos_consultas/',
-
-    // captura clique em evento
-    eventClick: function(info) {
-      // só agendar se for um slot livre
-      if (info.event.extendedProps.type === 'free') {
-        // evita ação padrão
-        info.jsEvent.preventDefault();
-
-        // preenche o form
-        var start = info.event.start;
-        var end   = info.event.end;
-        function fmt(d) {
-          const pad = n=>String(n).padStart(2,'0');
-          return d.getFullYear() + '-'
-               + pad(d.getMonth()+1) + '-'
-               + pad(d.getDate()) + 'T'
-               + pad(d.getHours()) + ':'
-               + pad(d.getMinutes()) + ':00';
-        }
-        $('#id_data_horario').val( fmt(start) );
-        $('#id_data_horario_end').val(   fmt(end) );
-        $('#id_descricao').val('Consulta automática');
-
-        // envia AJAX
-        $.ajax({
-          url:   "{% url 'agendar_consulta' paciente.id %}",
-          type:  "POST",
-          data:  $form.serialize(),
-          success: function() {
-            alert('Consulta agendada!');
-            calendar.refetchEvents();
-          },
-          error: function(xhr) {
-            alert('Erro: ' + xhr.responseJSON.error);
-          }
-        });
-      }
+    // formata ISO local sem offset nem "Z"
+    function formatLocal(date) {
+      const pad = n => String(n).padStart(2,'0');
+      return date.getFullYear() + '-'
+           + pad(date.getMonth()+1) + '-'
+           + pad(date.getDate())    + 'T'
+           + pad(date.getHours())   + ':'
+           + pad(date.getMinutes()) + ':00';
     }
-  });
 
-  calendar.render();
-});
-    </script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+      var $form      = $('#agendar-consulta-form');
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView:  'timeGridWeek',
+        locale:       'pt-br',
+        slotDuration: '01:00:00',
+        selectable:   false,
+        headerToolbar: {
+          left:   'prev,next today',
+          center: 'title',
+          right:  'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+
+        // carrega apenas bookings do servidor e gera slots livres
+        events: function(fetchInfo, successCallback, failureCallback) {
+          $.ajax({
+            url: "{% url 'eventos_consultas' %}",
+            data: {
+              start: fetchInfo.startStr,
+              end:   fetchInfo.endStr
+            },
+            success: function(bookedEvents) {
+              successCallback(bookedEvents);
+              var freeSlots = [], workStart = 8, workEnd = 18;
+              var day = new Date(fetchInfo.start); day.setHours(0,0,0,0);
+
+              while(day < fetchInfo.end) {
+                for (var h = workStart; h < workEnd; h++) {
+                  var slotStart = new Date(day);
+                  slotStart.setHours(h,0,0,0);
+                  var slotEnd = new Date(slotStart.getTime() + 3600000);
+
+                  if (slotStart < fetchInfo.start || slotEnd > fetchInfo.end) continue;
+
+                  var ocupado = bookedEvents.some(function(ev){
+                    var bs = new Date(ev.start), be = new Date(ev.end);
+                    return bs < slotEnd && be > slotStart;
+                  });
+
+                  if (!ocupado) {
+                    freeSlots.push({
+                      title:           'Livre',
+                      start:           formatLocal(slotStart),
+                      end:             formatLocal(slotEnd),
+                      backgroundColor: '#198754',
+                      borderColor:     '#198754',
+                      textColor:       '#fff',
+                      extendedProps:   { type: 'free' }
+                    });
+                  }
+                }
+                day.setDate(day.getDate() + 1);
+              }
+
+              calendar.addEventSource(freeSlots);
+            },
+            error: failureCallback
+          });
+        },
+
+        // ao clicar num slot livre, dispara o AJAX e atualiza o calendário
+        eventClick: function(info) {
+          if (info.event.extendedProps.type === 'free') {
+            info.jsEvent.preventDefault();
+
+            var start = info.event.start,
+                end   = info.event.end;
+
+            $('#id_data_horario').val(    formatLocal(start) );
+            $('#id_data_horario_end').val(formatLocal(end) );
+            $('#id_descricao').val('Consulta automática');
+
+            $.ajax({
+              url:   "{% url 'agendar_consulta' paciente.id %}",
+              type:  "POST",
+              data:  $form.serialize(),
+              success: function() {
+                // remove o bloco "Livre" clicado
+                info.event.remove();
+                // adiciona o novo evento agendado imediatamente
+                calendar.addEvent({
+                  title:           'Consulta: {{ paciente.nome }}',
+                  start:           formatLocal(start),
+                  end:             formatLocal(end),
+                  backgroundColor: '#dc3545',
+                  borderColor:     '#dc3545',
+                  extendedProps:   { type: 'booked' }
+                });
+                alert('Consulta agendada!');
+              },
+              error: function(xhr) {
+                alert('Erro: ' + xhr.responseJSON.error);
+              }
+            });
+          }
+        }
+      });
+
+      calendar.render();
+    });
+  </script>
 {% endblock conteudo %}
