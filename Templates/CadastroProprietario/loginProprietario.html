@@ -1,45 +1,35 @@
 {% extends "base.html" %}
-
 {% load static %}
 {% block conteudo %}
 
-    <div>
-        <label for=""class = "fw-bold fs-2 text-align">Faça seu Login</label>
-        <br>
-        <br>
-    </div>
-    <form action="{% url 'loginProprietario' %}" method = "POST">
-        <div class="mb-3  ">
+<div class="login-form">
+    <form action="{% url 'loginProprietario' %}" method="POST">
         {% csrf_token %}
-         
-                <label > Username </label> 
-                <input name = "nome_login" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Nome de Usuário">
-                <label for="inputPassword5"  >Password</label>
-                <input name = "senha" type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock">
-                 
-                <p>Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.</p>   
-          
-         </div>
-    <p>--------------------------------------------------------</p>
-    </div id="" class="form-text text-white">
-    <div> 
-        <button type="submit" class="btn btn-secondary" style="text-align: center;width:100%">Entrar</button>   
-    </div>
+        <div>
+            <label class="fw-bold fs-2">Faça seu Login</label>
+        </div>
+        <div>
+            <label>Username</label>
+            <input name="nome_login" type="text" class="form-control" placeholder="Nome de Usuário">
+        </div>
+        <div>
+            <label>Password</label>
+            <input name="senha" type="password" class="form-control" placeholder="Senha">
+            <p>Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.</p>
+        </div>
 
-    <div id="" class="form-text text-white">
-        
-        <button type="" class="btn btn-danger" style="text-align: center;width:100%">Reiniciar Senha</button>   
-    </div>  
-    <div class="form-text text-white">
-         
-        <a href="{% url 'registroProprietario' %}" class="btn   btn-warning " style="text-align: center;width:100%">Cadastrar Usuário</a>
+        <div class="button-group" style="display: flex; justify-content: space-between; gap: 1rem;">
+            
+            <button type="submit" class="btn" style="background-color: rgb(0, 179, 255)">Entrar</button>
+            <button type="button" class="btn" style="background-color: red">Reiniciar Senha</button>
+            <a href="{% url 'registroProprietario' %}" class="btn" style="background-color: green">Cadastrar Usuário</a>
+            <a href="{% url 'index' %}" class="btn" style="background-color: pink">Entrada Temporária</a>
+        </div>
+    </form>
+</div>
 
-    </div>
-    <div class="form-text text-white">    
-    
-        <a href="{% url 'index' %}" class="btn    " style="background-color: aquamarine; text-align: center;width:100%">Entrada Temporária</a>
-    </div>
-</form>
+ 
 
-{% endblock conteudo %} 
 
+{% endblock conteudo %}
+{% include 'footer.html' %}

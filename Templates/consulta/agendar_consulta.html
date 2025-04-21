@@ -1,140 +1,168 @@
 {% extends "base.html" %}
 {% load static %}
 {% block conteudo %}
-  <!-- FullCalendar CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet" />
 
-  <div class="content-container">
-    <h1 class="mb-4">Agendar Consulta para {{ paciente.nome }}</h1>
+<div class="content-container">
+  <h1 class="mb-4">Agendar Consulta: <b>{{ paciente.nome }}</b></h1>
 
-    <!-- Formulário oculto -->
-    <form method="post" id="agendar-consulta-form" class="d-none">
-      {% csrf_token %}
-      <input type="hidden" id="id_data_horario"     name="data_horario">
-      <input type="hidden" id="id_data_horario_end" name="data_horario_end">
-      <input type="hidden" id="id_descricao"        name="descricao" value="Consulta automática">
-    </form>
+  <form method="post" id="agendar-consulta-form" class="d-none">
+    {% csrf_token %}
+    <input type="hidden" id="id_data_horario" name="data_horario">
+    <input type="hidden" id="id_data_horario_end" name="data_horario_end">
+    <input type="hidden" id="id_descricao" name="descricao" value="Consulta automática">
+  </form>
 
-    <!-- Calendário -->
-    <div id="calendar" class="mx-auto" style="max-width: 1100px;"></div>
-  </div>
+  <div id="calendar" class="mx-auto" style="max-width: 1100px;"></div>
+</div>
 
-  <!-- FullCalendar e dependências -->
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/pt-br.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    // formata ISO local sem offset nem "Z"
-    function formatLocal(date) {
-      const pad = n => String(n).padStart(2,'0');
-      return date.getFullYear() + '-'
-           + pad(date.getMonth()+1) + '-'
-           + pad(date.getDate())    + 'T'
-           + pad(date.getHours())   + ':'
-           + pad(date.getMinutes()) + ':00';
-    }
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/pt-br.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    document.addEventListener('DOMContentLoaded', function() {
-      var calendarEl = document.getElementById('calendar');
-      var $form      = $('#agendar-consulta-form');
+<script>
+function formatLocal(date) {
+  const pad = n => String(n).padStart(2, '0');
+  return date.getFullYear() + '-' +
+         pad(date.getMonth()+1) + '-' +
+         pad(date.getDate()) + 'T' +
+         pad(date.getHours()) + ':' +
+         pad(date.getMinutes()) + ':00';
+}
 
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView:  'timeGridWeek',
-        locale:       'pt-br',
-        slotDuration: '01:00:00',
-        selectable:   false,
-        headerToolbar: {
-          left:   'prev,next today',
-          center: 'title',
-          right:  'dayGridMonth,timeGridWeek,timeGridDay'
+document.addEventListener('DOMContentLoaded', function () {
+  let agendando = false;
+  const calendarEl = document.getElementById('calendar');
+  const $form = $('#agendar-consulta-form');
+
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'timeGridWeek',
+    locale: 'pt-br',
+    allDaySlot: false,
+    slotDuration: '01:00:00',
+    snapDuration: '01:00:00',
+    slotMinTime: '08:00:00',
+    slotMaxTime: '18:00:00',
+    nowIndicator: true,
+    height: 'auto',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    },
+
+    events: function(fetchInfo, successCallback, failureCallback) {
+      $.ajax({
+        url: "{% url 'eventos_consultas' %}",
+        data: {
+          start: fetchInfo.startStr,
+          end: fetchInfo.endStr,
+          t: Date.now()  // Cache-bypass
         },
+        dataType: "json",
+        success: function(consultas) {
+          const eventsFinal = [...consultas];
+          const workStart = 8;
+          const workEnd = 18;
+          let dia = new Date(fetchInfo.start);
+          dia.setHours(0, 0, 0, 0);
 
-        // carrega apenas bookings do servidor e gera slots livres
-        events: function(fetchInfo, successCallback, failureCallback) {
-          $.ajax({
-            url: "{% url 'eventos_consultas' %}",
-            data: {
-              start: fetchInfo.startStr,
-              end:   fetchInfo.endStr
-            },
-            success: function(bookedEvents) {
-              successCallback(bookedEvents);
-              var freeSlots = [], workStart = 8, workEnd = 18;
-              var day = new Date(fetchInfo.start); day.setHours(0,0,0,0);
+          while (dia < fetchInfo.end) {
+            for (let h = workStart; h < workEnd; h++) {
+              const slotStart = new Date(dia);
+              slotStart.setHours(h, 0, 0, 0);
+              const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
 
-              while(day < fetchInfo.end) {
-                for (var h = workStart; h < workEnd; h++) {
-                  var slotStart = new Date(day);
-                  slotStart.setHours(h,0,0,0);
-                  var slotEnd = new Date(slotStart.getTime() + 3600000);
+              const ocupado = consultas.some(ev => {
+                const evStart = new Date(ev.start).getTime();
+                const evEnd = new Date(ev.end).getTime();
+                return evStart < slotEnd.getTime() && evEnd > slotStart.getTime();
+              });
 
-                  if (slotStart < fetchInfo.start || slotEnd > fetchInfo.end) continue;
-
-                  var ocupado = bookedEvents.some(function(ev){
-                    var bs = new Date(ev.start), be = new Date(ev.end);
-                    return bs < slotEnd && be > slotStart;
-                  });
-
-                  if (!ocupado) {
-                    freeSlots.push({
-                      title:           'Livre',
-                      start:           formatLocal(slotStart),
-                      end:             formatLocal(slotEnd),
-                      backgroundColor: '#198754',
-                      borderColor:     '#198754',
-                      textColor:       '#fff',
-                      extendedProps:   { type: 'free' }
-                    });
-                  }
-                }
-                day.setDate(day.getDate() + 1);
-              }
-
-              calendar.addEventSource(freeSlots);
-            },
-            error: failureCallback
-          });
-        },
-
-        // ao clicar num slot livre, dispara o AJAX e atualiza o calendário
-        eventClick: function(info) {
-          if (info.event.extendedProps.type === 'free') {
-            info.jsEvent.preventDefault();
-
-            var start = info.event.start,
-                end   = info.event.end;
-
-            $('#id_data_horario').val(    formatLocal(start) );
-            $('#id_data_horario_end').val(formatLocal(end) );
-            $('#id_descricao').val('Consulta automática');
-
-            $.ajax({
-              url:   "{% url 'agendar_consulta' paciente.id %}",
-              type:  "POST",
-              data:  $form.serialize(),
-              success: function() {
-                // remove o bloco "Livre" clicado
-                info.event.remove();
-                // adiciona o novo evento agendado imediatamente
-                calendar.addEvent({
-                  title:           'Consulta: {{ paciente.nome }}',
-                  start:           formatLocal(start),
-                  end:             formatLocal(end),
-                  backgroundColor: '#dc3545',
-                  borderColor:     '#dc3545',
-                  extendedProps:   { type: 'booked' }
+              if (!ocupado) {
+                eventsFinal.push({
+                  title: 'Livre',
+                  start: formatLocal(slotStart),
+                  end: formatLocal(slotEnd),
+                  backgroundColor: '#198754',
+                  borderColor: '#198754',
+                  textColor: '#fff',
+                  extendedProps: { type: 'free' }
                 });
-                alert('Consulta agendada!');
-              },
-              error: function(xhr) {
-                alert('Erro: ' + xhr.responseJSON.error);
+              }
+            }
+            dia.setDate(dia.getDate() + 1);
+          }
+
+          successCallback(eventsFinal);
+        },
+        error: failureCallback
+      });
+    },
+
+    eventClick: function(info) {
+      if (info.event.extendedProps.type === 'free') {
+        if (agendando) return;
+        agendando = true;
+
+        const start = info.event.start;
+        const end = info.event.end;
+
+        // Remover evento "Livre"
+        info.event.remove();
+
+        // Criar evento vermelho visual
+        const fakeEvent = calendar.addEvent({
+          title: 'Consulta reservada...',
+          start: start,
+          end: end,
+          backgroundColor: '#dc3545',
+          borderColor: '#dc3545',
+          textColor: '#ffffff',
+          editable: false
+        });
+
+        $('#id_data_horario').val(formatLocal(start));
+        $('#id_data_horario_end').val(formatLocal(end));
+
+        $.ajax({
+          url: "{% url 'agendar_consulta' paciente.id %}",
+          type: "POST",
+          data: $form.serialize(),
+          success: function () {
+            alert('Consulta agendada com sucesso!');
+            calendar.refetchEvents({
+              extraParams: {
+                t: Date.now()
               }
             });
-          }
-        }
-      });
+          },
+          error: function (xhr) {
+            alert('Erro: ' + (xhr.responseJSON?.error || 'Erro inesperado.'));
 
-      calendar.render();
-    });
-  </script>
+            // Reverte o evento visual
+            fakeEvent.remove();
+
+            // Restaura o slot como "Livre"
+            calendar.addEvent({
+              title: 'Livre',
+              start: start,
+              end: end,
+              backgroundColor: '#198754',
+              borderColor: '#198754',
+              textColor: '#fff',
+              extendedProps: { type: 'free' }
+            });
+          },
+          complete: function () {
+            agendando = false;
+          }
+        });
+      }
+    }
+  });
+
+  calendar.render();
+});
+</script>
 {% endblock conteudo %}
