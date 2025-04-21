@@ -103,4 +103,7 @@ def eventos_consultas(request):
 
 @login_required
 def calendario_consultas(request):
-    return render(request, 'consulta/calendario_consultas.html')
+    consultas = Consulta.objects.all().order_by('data_horario')
+    print(consultas)
+    #procedimentos = Procedimento.objects.all()
+    return render(request, 'consulta/calendario_consultas.html',{'consultas':consultas})
