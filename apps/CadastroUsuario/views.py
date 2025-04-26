@@ -27,6 +27,7 @@ def configuracao(request):
 def cadastrar_paciente(request):
     if request.method=='POST':
         #form = CadastroPacientesForm(request.POST)
+        #print(CadastroPacientesForm(request.POST))
         novo_registro = CadastroPacientes(
             #['nome','telefone','email','data_nascimento','profissao','cep','estado','cidade','bairro','numero','complemento','alergia','doencas_conhecidas']  
             usuario = request.user,
@@ -44,6 +45,8 @@ def cadastrar_paciente(request):
             complemento = request.POST['complemento'],
             alergia = request.POST['alergia'],
             doencas_conhecidas = request.POST['doencas_conhecidas'],
+             
+            
             
         )    
         

@@ -24,7 +24,7 @@
 function formatLocal(date) {
   const pad = n => String(n).padStart(2, '0');
   return date.getFullYear() + '-' +
-         pad(date.getMonth()+1) + '-' +
+         pad(date.getMonth() + 1) + '-' +
          pad(date.getDate()) + 'T' +
          pad(date.getHours()) + ':' +
          pad(date.getMinutes()) + ':00';
@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let agendando = false;
   const calendarEl = document.getElementById('calendar');
   const $form = $('#agendar-consulta-form');
+  const pacienteNome = "{{ paciente.nome }}";
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'timeGridWeek',
@@ -57,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
         data: {
           start: fetchInfo.startStr,
           end: fetchInfo.endStr,
-          t: Date.now()  // Cache-bypass
+          t: Date.now()
         },
         dataType: "json",
         success: function(consultas) {
@@ -73,10 +74,10 @@ document.addEventListener('DOMContentLoaded', function () {
               slotStart.setHours(h, 0, 0, 0);
               const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
 
-              const ocupado = consultas.some(ev => {
+              const ocupado = eventsFinal.some(ev => {
                 const evStart = new Date(ev.start).getTime();
                 const evEnd = new Date(ev.end).getTime();
-                return evStart < slotEnd.getTime() && evEnd > slotStart.getTime();
+                return evStart === slotStart.getTime() && evEnd === slotEnd.getTime();
               });
 
               if (!ocupado) {
@@ -108,12 +109,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const start = info.event.start;
         const end = info.event.end;
 
-        // Remover evento "Livre"
         info.event.remove();
 
-        // Criar evento vermelho visual
         const fakeEvent = calendar.addEvent({
-          title: 'Consulta reservada...',
+          title: pacienteNome,
           start: start,
           end: end,
           backgroundColor: '#dc3545',
@@ -131,6 +130,9 @@ document.addEventListener('DOMContentLoaded', function () {
           data: $form.serialize(),
           success: function () {
             alert('Consulta agendada com sucesso!');
+            calendar.getEvents().forEach(function(event) {
+              event.remove();
+            });
             calendar.refetchEvents({
               extraParams: {
                 t: Date.now()
@@ -140,10 +142,8 @@ document.addEventListener('DOMContentLoaded', function () {
           error: function (xhr) {
             alert('Erro: ' + (xhr.responseJSON?.error || 'Erro inesperado.'));
 
-            // Reverte o evento visual
             fakeEvent.remove();
 
-            // Restaura o slot como "Livre"
             calendar.addEvent({
               title: 'Livre',
               start: start,

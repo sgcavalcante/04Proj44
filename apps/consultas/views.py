@@ -89,7 +89,7 @@ def eventos_consultas(request):
     # ✅ Eventos vermelhos: consultas marcadas
     for consulta in consultas:
         eventos.append({
-            'title': f'Consulta: {consulta.paciente.nome}',
+            'title': consulta.paciente.nome,
             'start': consulta.data_horario.isoformat(),
             'end': consulta.data_horario_end.isoformat(),
             'backgroundColor': '#dc3545',
