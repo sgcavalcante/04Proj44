@@ -1,167 +1,145 @@
+<!-- template_agendar_consulta.html -->
 {% extends "base.html" %}
 {% load static %}
 {% block conteudo %}
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet" />
-
+<style>
+  /* Aumenta a altura mínima das linhas de slot */
+  .fc-timegrid-slot-lane .fc-scrollgrid-section td {
+    min-height: 120px !important;
+  }
+  /* Eventos ocupem todo o slot */
+  .fc-event, .fc-event-main { height: 100%; white-space: normal; }
+</style>
 <div class="content-container">
   <h1 class="mb-4">Agendar Consulta: <b>{{ paciente.nome }}</b></h1>
-
+  <!-- Formulários ocultos -->
   <form method="post" id="agendar-consulta-form" class="d-none">
     {% csrf_token %}
     <input type="hidden" id="id_data_horario" name="data_horario">
     <input type="hidden" id="id_data_horario_end" name="data_horario_end">
-    <input type="hidden" id="id_descricao" name="descricao" value="Consulta automática">
+    <input type="hidden" name="descricao" value="Consulta automática">
   </form>
-
+  <form method="post" id="remover-consulta-form" action="{% url 'remover_consulta' paciente.id %}" class="d-none">
+    {% csrf_token %}
+    <input type="hidden" id="id_consulta_id" name="consulta_id">
+  </form>
   <div id="calendar" class="mx-auto" style="max-width: 1100px;"></div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/pt-br.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script>
 function formatLocal(date) {
   const pad = n => String(n).padStart(2, '0');
-  return date.getFullYear() + '-' +
-         pad(date.getMonth() + 1) + '-' +
-         pad(date.getDate()) + 'T' +
-         pad(date.getHours()) + ':' +
-         pad(date.getMinutes()) + ':00';
+  return date.getFullYear() + '-' + pad(date.getMonth()+1) + '-' + pad(date.getDate()) + 'T' + pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':00';
 }
-
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
   let agendando = false;
   const calendarEl = document.getElementById('calendar');
-  const $form = $('#agendar-consulta-form');
+  const $formAgendar = $('#agendar-consulta-form');
+  const $formRemover = $('#remover-consulta-form');
   const pacienteNome = "{{ paciente.nome }}";
 
   const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'timeGridWeek',
-    locale: 'pt-br',
-    allDaySlot: false,
-    slotDuration: '01:00:00',
-    snapDuration: '01:00:00',
-    slotMinTime: '08:00:00',
-    slotMaxTime: '18:00:00',
-    nowIndicator: true,
-    height: 'auto',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    },
+    initialView: 'timeGridWeek', locale: 'pt-br', allDaySlot: false,
+    slotDuration: '01:00:00', snapDuration: '01:00:00', slotMinTime: '08:00:00', slotMaxTime: '18:00:00', nowIndicator: true, height: 'auto',
+    headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
 
     events: function(fetchInfo, successCallback, failureCallback) {
       $.ajax({
-        url: "{% url 'eventos_consultas' %}",
-        data: {
-          start: fetchInfo.startStr,
-          end: fetchInfo.endStr,
-          t: Date.now()
-        },
-        dataType: "json",
+        url: "{% url 'eventos_consultas' %}", data: { start: fetchInfo.startStr, end: fetchInfo.endStr, t: Date.now() }, dataType: 'json',
         success: function(consultas) {
-          const eventsFinal = [...consultas];
-          const workStart = 8;
-          const workEnd = 18;
-          let dia = new Date(fetchInfo.start);
-          dia.setHours(0, 0, 0, 0);
-
-          while (dia < fetchInfo.end) {
-            for (let h = workStart; h < workEnd; h++) {
-              const slotStart = new Date(dia);
-              slotStart.setHours(h, 0, 0, 0);
-              const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
-
-              const ocupado = eventsFinal.some(ev => {
-                const evStart = new Date(ev.start).getTime();
-                const evEnd = new Date(ev.end).getTime();
-                return evStart === slotStart.getTime() && evEnd === slotEnd.getTime();
-              });
-
-              if (!ocupado) {
-                eventsFinal.push({
-                  title: 'Livre',
-                  start: formatLocal(slotStart),
-                  end: formatLocal(slotEnd),
-                  backgroundColor: '#198754',
-                  borderColor: '#198754',
-                  textColor: '#fff',
+          const events = [];
+          consultas.forEach(c => {
+            events.push({
+              id: 'consulta-' + c.id,
+              title: c.paciente_nome || c.title,
+              start: c.start,
+              end: c.end,
+              backgroundColor: '#dc3545', borderColor: '#dc3545', textColor: '#fff',
+              extendedProps: { type: 'booked', consultaId: c.id }
+            });
+          });
+          // slots livres
+          let dateCursor = new Date(fetchInfo.start);
+          dateCursor.setHours(0,0,0,0);
+          while (dateCursor < fetchInfo.end) {
+            for (let h = 8; h < 18; h++) {
+              const startSlot = new Date(dateCursor);
+              startSlot.setHours(h,0,0,0);
+              const endSlot = new Date(startSlot.getTime() + 3600000);
+              if (!events.some(ev => new Date(ev.start).getTime() === startSlot.getTime())) {
+                events.push({
+                  id: 'free-' + startSlot.getTime(), title: formatLocal(startSlot).split('T')[1].slice(0,5),
+                  start: formatLocal(startSlot), end: formatLocal(endSlot),
+                  backgroundColor: '#198754', borderColor: '#198754', textColor: '#fff',
                   extendedProps: { type: 'free' }
                 });
               }
             }
-            dia.setDate(dia.getDate() + 1);
+            dateCursor.setDate(dateCursor.getDate() + 1);
           }
-
-          successCallback(eventsFinal);
-        },
-        error: failureCallback
+          successCallback(events);
+        }, error: failureCallback
       });
     },
 
+    eventContent: function(arg) {
+      // exibe título e ID se presente
+      const title = arg.event.title;
+      const id = arg.event.extendedProps.consultaId;
+      let html = '<div>' + title;
+      if (id) html += '<br><small>ID: ' + id + '</small>';
+      html += '</div>';
+      return { html: html };
+    },
+
     eventClick: function(info) {
-      if (info.event.extendedProps.type === 'free') {
+      const type = info.event.extendedProps.type;
+      if (type === 'free') {
         if (agendando) return;
         agendando = true;
-
         const start = info.event.start;
         const end = info.event.end;
-
         info.event.remove();
-
-        const fakeEvent = calendar.addEvent({
-          title: pacienteNome,
-          start: start,
-          end: end,
-          backgroundColor: '#dc3545',
-          borderColor: '#dc3545',
-          textColor: '#ffffff',
-          editable: false
-        });
-
+        const fake = calendar.addEvent({ title: pacienteNome, start, end, backgroundColor: '#dc3545', borderColor: '#dc3545', textColor: '#fff', editable: false });
         $('#id_data_horario').val(formatLocal(start));
         $('#id_data_horario_end').val(formatLocal(end));
-
-        $.ajax({
-          url: "{% url 'agendar_consulta' paciente.id %}",
-          type: "POST",
-          data: $form.serialize(),
-          success: function () {
+        // envia e recebe nova ID
+        $.post("{% url 'agendar_consulta' paciente.id %}", $formAgendar.serialize())
+          .done(function(response) {
+            if (response.id) {
+              fake.setExtendedProp('type', 'booked');
+              fake.setExtendedProp('consultaId', response.id);
+              fake.setProp('title', pacienteNome + ' (ID:' + response.id + ')');
+            }
             alert('Consulta agendada com sucesso!');
-            calendar.getEvents().forEach(function(event) {
-              event.remove();
-            });
-            calendar.refetchEvents({
-              extraParams: {
-                t: Date.now()
-              }
-            });
-          },
-          error: function (xhr) {
+          })
+          .fail(function(xhr) {
             alert('Erro: ' + (xhr.responseJSON?.error || 'Erro inesperado.'));
+            fake.remove();
+          })
+          .always(function() { agendando = false; });
 
-            fakeEvent.remove();
-
-            calendar.addEvent({
-              title: 'Livre',
-              start: start,
-              end: end,
-              backgroundColor: '#198754',
-              borderColor: '#198754',
-              textColor: '#fff',
-              extendedProps: { type: 'free' }
+      } else if (type === 'booked') {
+        const consultaId = info.event.extendedProps.consultaId;
+        if (!consultaId) { alert('ID não encontrado.'); return; }
+        if (confirm('Deseja remover esta consulta?')) {
+          $('#id_consulta_id').val(consultaId);
+          $.post($formRemover.attr('action'), $formRemover.serialize())
+            .done(function() {
+              alert('Consulta removida com sucesso!');
+              calendar.removeAllEvents();
+              calendar.refetchEvents({ extraParams: { t: Date.now() } });
+            })
+            .fail(function(xhr) {
+              alert('Erro ao remover: ' + (xhr.responseJSON?.error || 'Erro inesperado.'));
             });
-          },
-          complete: function () {
-            agendando = false;
-          }
-        });
+        }
       }
     }
   });
-
   calendar.render();
 });
 </script>

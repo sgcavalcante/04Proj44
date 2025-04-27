@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block conteudo %}
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet" />
+
 
 <div class="content-container">
   <h1 class="mb-4">Calendário de Consultas</h1>
@@ -30,36 +30,5 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales/pt-br.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  const calendarEl = document.getElementById('calendar');
 
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'timeGridWeek',
-    locale: 'pt-br',
-    allDaySlot: false,
-    slotDuration: '01:00:00',
-    snapDuration: '01:00:00',
-    slotMinTime: '08:00:00',
-    slotMaxTime: '18:00:00',
-    nowIndicator: true,
-    height: 'auto',
-    eventOverlap: false,
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    },
-
-    events: {
-      url: "{% url 'eventos_consultas' %}",
-      failure: function () {
-        alert('Erro ao carregar eventos.');
-      }
-    },
-  });
-
-  calendar.render();
-});
-</script>
 {% endblock conteudo %}
